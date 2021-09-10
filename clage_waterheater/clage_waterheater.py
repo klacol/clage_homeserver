@@ -18,7 +18,7 @@ class ClageWaterHeaterStatusMapper:
 
     def mapApiStatusResponse(self, status):
 
-        numberOfConnectedHeaters = 1  # I have only one hetaer, so i start with this scenario
+        numberOfConnectedHeaters = 1  # I have only one heater, so i start with this scenario
 
         homeserver_version = ClageWaterHeater.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'             # OK
@@ -127,6 +127,13 @@ class ClageWaterHeater:
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
 
+    def setTemperature(self, temperature):
+        tempApiValue = str(int(temperature*10))
+        url = "https://"+self.ipAddress+"/devices/setpoint/"+self.homeserverId
+        body = {'data': tempApiValue, 'cid': '1'}
+
+        setRequest = requests.put(url=url,auth=(self.username, self.password), data=body, timeout=5, verify=False)
+        return ClageWaterHeaterStatusMapper().mapApiStatusResponse(setRequest.json())
 
     def requestStatus(self):
         response = {}
@@ -141,9 +148,11 @@ class ClageWaterHeater:
 
 
 ######################################################################################
-from ClageWaterHeater import ClageWaterHeater 
+from clage_waterheater import ClageWaterHeater 
 clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7') 
 response = clageWaterHeater.requestStatus()
+
+clageWaterHeater.setTemperature(44)
 
 print(response)
 
