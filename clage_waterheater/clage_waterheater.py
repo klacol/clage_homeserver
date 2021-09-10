@@ -23,7 +23,8 @@ class ClageWaterHeaterStatusMapper:
         homeserver_version = ClageWaterHeater.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
-        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
+        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 
+                                                                                  # => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
         homeserver_cached = bool(status.get('cached'))                            # True
 
@@ -57,36 +58,36 @@ class ClageWaterHeaterStatusMapper:
         heater_status_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'  # OK
 
         return ({
-            'homeserver_version' : homeserver_version,
-            'homeserver_error' : homeserver_error,
-            'homeserver_time' : homeserver_time,
-            'homeserver_success' : homeserver_success,
-            'homeserver_cached' : homeserver_cached,
-            'heater_id' : heater_id,
-            'heater_busId' : heater_busId,
-            'heater_name' : heater_name,
-            'heater_connected' : heater_connected,
-            'heater_signal' : heater_signal,
-            'heater_rssi' : heater_rssi,
-            'heater_lqi' : heater_lqi,
-            'heater_status_setpoint' : heater_status_setpoint,
-            'heater_status_tInint' : heater_status_tInint,
-            'heater_status_tOutint' : heater_status_tOutint,
-            'heater_status_tP1' : heater_status_tP1,
-            'heater_status_tP2' : heater_status_tP2,
-            'heater_status_tP3' : heater_status_tP3,
-            'heater_status_tP4' : heater_status_tP4,
-            'heater_status_flow' : heater_status_flow,
-            'heater_status_flowMax' : heater_status_flowMax,
-            'heater_status_valvePos' : heater_status_valvePos,
-            'heater_status_valveFlags' : heater_status_valveFlags,
-            'heater_status_power' : heater_status_power,
-            'heater_status_powerMax' : heater_status_powerMax,
-            'heater_status_power100' : heater_status_power100,
-            'heater_status_fillingLeft' : heater_status_fillingLeft,
-            'heater_status_flags' : heater_status_flags,
-            'heater_status_sysFlags' : heater_status_sysFlags,
-            'heater_status_error' : heater_status_error,
+            'homeserver_version': homeserver_version,
+            'homeserver_error': homeserver_error,
+            'homeserver_time': homeserver_time,
+            'homeserver_success': homeserver_success,
+            'homeserver_cached': homeserver_cached,
+            'heater_id': heater_id,
+            'heater_busId': heater_busId,
+            'heater_name': heater_name,
+            'heater_connected': heater_connected,
+            'heater_signal': heater_signal,
+            'heater_rssi': heater_rssi,
+            'heater_lqi': heater_lqi,
+            'heater_status_setpoint': heater_status_setpoint,
+            'heater_status_tInint': heater_status_tInint,
+            'heater_status_tOutint': heater_status_tOutint,
+            'heater_status_tP1': heater_status_tP1,
+            'heater_status_tP2': heater_status_tP2,
+            'heater_status_tP3': heater_status_tP3,
+            'heater_status_tP4': heater_status_tP4,
+            'heater_status_flow': heater_status_flow,
+            'heater_status_flowMax': heater_status_flowMax,
+            'heater_status_valvePos': heater_status_valvePos,
+            'heater_status_valveFlags': heater_status_valveFlags,
+            'heater_status_power': heater_status_power,
+            'heater_status_powerMax': heater_status_powerMax,
+            'heater_status_power100': heater_status_power100,
+            'heater_status_fillingLeft': heater_status_fillingLeft,
+            'heater_status_flags': heater_status_flags,
+            'heater_status_sysFlags': heater_status_sysFlags,
+            'heater_status_error': heater_status_error,
         })
 
 
