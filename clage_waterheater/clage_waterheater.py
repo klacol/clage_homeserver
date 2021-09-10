@@ -23,20 +23,20 @@ class ClageWaterHeaterStatusMapper:
         homeserver_version = ClageWaterHeater.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
-        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Your time zone: Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
+        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
         homeserver_cached = bool(status.get('cached'))                            # True
 
         heater = status.get('devices')[numberOfConnectedHeaters-1]
         heater_id = heater.get('id')                                              # 2049DB0CD7
-        heater_busId = heater.get('busId')                                        #  1
-        heater_name = heater.get('name')                                          #  ""
-        heater_connected = bool(heater.get('connected'))                          #  true
-        heater_signal = heater.get('signal')                                      #  -67
-        heater_rssi = heater.get('rssi')                                          #  0
-        heater_lqi = heater.get('lqi')                                            #  0
+        heater_busId = heater.get('busId')                                        # 1
+        heater_name = heater.get('name')                                          # ""
+        heater_connected = bool(heater.get('connected'))                          # true
+        heater_signal = heater.get('signal')                                      # -67
+        heater_rssi = heater.get('rssi')                                          # 0
+        heater_lqi = heater.get('lqi')                                            # 0
 
-        heater_status = heater.get('status')    
+        heater_status = heater.get('status')
         heater_status_setpoint = float(heater_status.get('setpoint'))/10          # 600 => 60 °C
         heater_status_tInint = float(heater_status.get('tIn'))/10                 # 274 => 27.4 °C
         heater_status_tOutint = float(heater_status.get('tOut'))/10               # 244 => 24.4 °C
@@ -54,15 +54,15 @@ class ClageWaterHeaterStatusMapper:
         heater_status_fillingLeft = int(heater_status.get('fillingLeft'))         # 0
         heater_status_flags = int(heater_status.get('flags'))                     # 1
         heater_status_sysFlags = int(heater_status.get('sysFlags'))               # 0
-        heater_status_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown' # OK
+        heater_status_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'  # OK
 
         return ({
-            'homeserver_version': homeserver_version,
-            'homeserver_error': homeserver_error,
-            'homeserver_time': homeserver_time,
-            'homeserver_success': homeserver_success,
-            'homeserver_cached': homeserver_cached,
-            'heater_id': heater_id,
+            'homeserver_version' : homeserver_version,
+            'homeserver_error' : homeserver_error,
+            'homeserver_time' : homeserver_time,
+            'homeserver_success' : homeserver_success,
+            'homeserver_cached' : homeserver_cached,
+            'heater_id' : heater_id,
             'heater_busId' : heater_busId,
             'heater_name' : heater_name,
             'heater_connected' : heater_connected,
@@ -96,7 +96,6 @@ class ClageWaterHeater:
     homeserverId = ""
     username = "appuser"
     password = "smart"
-
 
     def __init__(self, ipAddress,homeserverId):
         if (ipAddress is None or ipAddress == ''):
@@ -143,9 +142,6 @@ class ClageWaterHeater:
         except JSONDecodeError:
             response = ClageWaterHeaterStatusMapper().mapApiStatusResponse({})
         return response
-
-
-
 
 ######################################################################################
 # from clage_waterheater import ClageWaterHeater 
