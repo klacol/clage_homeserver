@@ -1,15 +1,53 @@
 from unittest import (TestCase, mock)
-from goecharger.goecharger import (GoeChargerStatusMapper)
+from clage_waterheater.clage_waterheater import (ClageWaterHeaterStatusMapper)
 
-SAMPLE_API_STATUS_RESPONSE = {"version":"B","tme":"2612191302","rbc":"18","rbt":"769989354","car":"4","amp":"16","err":"0","ast":"0","alw":"1","stp":"0","cbl":"32","pha":"56","tmp":"32","tma":[30.55,31.55,32.55,33.55],"dws":"1124887","dwo":"0","adi":"0","uby":"0","eto":"490","wst":"3","txi":"0","nrg":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],"fwv":"033","sse":"111111","wss":"SSID","wke":"********","wen":"1","cdi":"0","tof":"101","tds":"1","lbr":"100","aho":"3","afi":"7","azo":"0","ama":"16","al1":"6","al2":"10","al3":"16","al4":"0","al5":"0","cid":"65535","cch":"255","cfi":"65280","lse":"1","ust":"0","wak":"aaaaaaaaaa","r1x":"0","dto":"0","nmo":"0","sch":"AAAAAAAAAAAAAAAA","sdp":"0","eca":"0","ecr":"0","ecd":"0","ec4":"0","ec5":"0","ec6":"0","ec7":"0","ec8":"0","ec9":"0","ec1":"0","rca":"CACACACA","rcr":"","rcd":"","rc4":"","rc5":"","rc6":"","rc7":"","rc8":"","rc9":"","rc1":"","rna":"","rnm":"","rne":"","rn4":"","rn5":"","rn6":"","rn7":"","rn8":"","rn9":"","rn1":"","loe":0,"lot":0,"lom":0,"lop":0,"log":"","lon":0,"lof":0,"loa":0,"lch":260254,"mce":0,"mcs":"","mcp":0,"mcu":"","mck":"","mcc":0}
-SAMPLE_REQUEST_STATUS_RESPONSE = {'car_status': 'charging finished, vehicle still connected', 'charger_max_current': 16, 'charger_absolute_max_current': 16, 'charger_err': 'OK', 'charger_access': 'free', 'allow_charging': 'on', 'stop_mode': 'manual', 'cable_lock_mode': 0, 'cable_max_current': 32, 'pre_contactor_l1': 'on', 'pre_contactor_l2': 'on', 'pre_contactor_l3': 'on', 'post_contactor_l1': 'off', 'post_contactor_l2': 'off', 'post_contactor_l3': 'off', 'charger_temp': 32, 'current_session_charged_energy': 3.12469, 'charge_limit': 0.0, 'adapter': 'No Adapter', 'unlocked_by_card': 0, 'energy_total': 49.0, 'wifi': 'connected', 'u_l1': 1, 'u_l2': 2, 'u_l3': 3, 'u_n': 4, 'i_l1': 0.5, 'i_l2': 0.6, 'i_l3': 0.7, 'p_l1': 0.8, 'p_l2': 0.9, 'p_l3': 1.0, 'p_n': 1.1, 'p_all': 0.12, 'lf_l1': 13, 'lf_l2': 14, 'lf_l3': 15, 'lf_n': 16, 'firmware': '033', 'serial_number': '111111', 'wifi_ssid': 'SSID', 'wifi_enabled': 'on', 'timezone_offset': 1, 'timezone_dst_offset': 1}
+SAMPLE_API_STATUS_RESPONSE = {
+    "version": "1.4",
+    "error": 0,
+    "time": 1631263211,
+    "success": true,
+    "cached": true,
+    "devices": [
+        {
+            "id": "2049DB0CD7",
+            "busId": 1,
+            "name": "",
+            "connected": true,
+            "signal": -67,
+            "rssi": 0,
+            "lqi": 0,
+            "status": {
+                "setpoint": 600,
+                "tLimit": 0,
+                "tIn": 274,
+                "tOut": 244,
+                "tP1": 0,
+                "tP2": 0,
+                "tP3": 0,
+                "tP4": 0,
+                "flow": 0,
+                "flowMax": 254,
+                "valvePos": 71,
+                "valveFlags": 0,
+                "power": 0,
+                "powerMax": 140,
+                "power100": 0,
+                "fillingLeft": 0,
+                "flags": 1,
+                "sysFlags": 0,
+                "error": 0
+            }
+        }
+    ]
+}
+SAMPLE_REQUEST_STATUS_RESPONSE = {}
 
-class TestGoeChargerMapper(TestCase):
+class TestClageWaterHeaterStatusMapper(TestCase):
 
     def __helper_get_mapped_key(self, key, value):
         apiResponse = dict(SAMPLE_API_STATUS_RESPONSE)
         apiResponse[key] = value
-        return GoeChargerStatusMapper().mapApiStatusResponse(apiResponse)
+        return ClageWaterHeaterStatusMapper().mapApiStatusResponse(apiResponse)
 
     def test_map_car(self):
         self.assertEqual("Charger ready, no vehicle", self.__helper_get_mapped_key('car','1').get('car_status'))
@@ -76,16 +114,16 @@ class TestGoeChargerMapper(TestCase):
         self.assertEqual(32, self.__helper_get_mapped_key('tmp', 3).get('charger_temp'))
 
     def test_map_charger_temp0(self):
-        self.assertEqual(30.55, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp0'))
+        self.assertEqual(30.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp0'))
 
     def test_map_charger_temp1(self):
-        self.assertEqual(31.55, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp1'))
+        self.assertEqual(31.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp1'))
 
     def test_map_charger_temp2(self):
-        self.assertEqual(32.55, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp2'))
+        self.assertEqual(32.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp2'))
 
     def test_map_charger_temp3(self):
-        self.assertEqual(33.55, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp3'))
+        self.assertEqual(33.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp3'))
 
 
     def test_map_current_session_charged_energy(self):
@@ -128,22 +166,22 @@ class TestGoeChargerMapper(TestCase):
         self.assertEqual(200, self.__helper_get_mapped_key('tds', '200').get('timezone_dst_offset'))
 
     def test_map_meter_values(self):
-        self.assertEqual(1, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l1'))
-        self.assertEqual(2, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l2'))
-        self.assertEqual(3, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l3'))
-        self.assertEqual(4, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_n'))
-        self.assertEqual(0.5, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l1'))
-        self.assertEqual(0.6, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l2'))
-        self.assertEqual(0.7, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l3'))
-        self.assertEqual(0.8, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l1'))
-        self.assertEqual(0.9, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l2'))
-        self.assertEqual(1.0, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l3'))
-        self.assertEqual(1.1, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_n'))
-        self.assertEqual(0.12, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_all'))
-        self.assertEqual(13, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l1'))
-        self.assertEqual(14, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l2'))
-        self.assertEqual(15, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l3'))
-        self.assertEqual(16, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_n'))
-        self.assertEqual(0, GoeChargerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('cable_lock_mode'))
+        self.assertEqual(1, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l1'))
+        self.assertEqual(2, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l2'))
+        self.assertEqual(3, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l3'))
+        self.assertEqual(4, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_n'))
+        self.assertEqual(0.5, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l1'))
+        self.assertEqual(0.6, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l2'))
+        self.assertEqual(0.7, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l3'))
+        self.assertEqual(0.8, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l1'))
+        self.assertEqual(0.9, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l2'))
+        self.assertEqual(1.0, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l3'))
+        self.assertEqual(1.1, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_n'))
+        self.assertEqual(0.12, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_all'))
+        self.assertEqual(13, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l1'))
+        self.assertEqual(14, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l2'))
+        self.assertEqual(15, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l3'))
+        self.assertEqual(16, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_n'))
+        self.assertEqual(0, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('cable_lock_mode'))
 
     

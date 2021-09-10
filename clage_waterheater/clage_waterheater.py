@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+
+# API-documentation: https://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0
+# Reverse engineered!! Unfortunaltely, there is no official documentation from the manufacturer available
+
 import requests
 import datetime
 from json import JSONDecodeError

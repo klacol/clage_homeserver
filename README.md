@@ -1,40 +1,36 @@
-# goecharger API (WIP)
-Python API for accessing the go-eCharger EV-Charger via the local http-Endpoint
+# clage_waterheater API (WIP)
+Python API for accessing the Clage Waterheater via the local http-Endpoint
 
-Tested with the "[go-eCharger HOME+](https://go-e.co/en/go-echarger-home-2/)" CEE-Version
+Tested with the "[Clage DSX Touch](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)" with an integrated Homeserver
 
 # Warning: WIP - Breaking changes possible
 This is the first version of the API so there are still breaking chnages possible eg. output parameter names or values.
 
 # Links
-[Product Homepage](https://go-e.co/en/go-echarger-home-2/)
+[Product Homepage](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)
 
-[API-Documentation](https://go-e.co/app/api.pdf)
+[API-Documentation](ttps://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
 
-[Project Homepage](https://github.com/cathiele/goecharger)
+[Project Homepage](https://github.com/klacol/clage_waterheater)
 
-[PyPi Package](https://pypi.org/project/goecharger/)
-
-[Home Assistant Integration](https://github.com/cathiele/homeassistant-goecharger)
-
-[goecharger CLI App](https://github.com/cathiele/goecharger-client) (TBD / WIP)
+[PyPi Package](https://pypi.org/project/clage_waterheater/)
 
 # Features
-- Query Charger Status
-- Set Charger Configuration
+- Query Heater Status
+- Set Heater Temperature
 
 # Install
 
 ```
-pip install goecharger
+pip install clage_waterheater
 ```
 
 # Example
 
 ```python
-from goecharger import GoeCharger
+from clage_waterheater import clage_waterheater
 
-charger = GoeCharger('192.168.1.1') # <- change to your charger IP
+heater = clage_waterheater('192.168.1.1','xxxxxxx') # <- change to your charger IP and your homeserver id
  
-print (charger.requestStatus())
+print (heater.requestStatus())
 ```
