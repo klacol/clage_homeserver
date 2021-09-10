@@ -1,19 +1,18 @@
 from unittest import (TestCase, mock)
-from clage_waterheater import (ClageWaterHeater)
-from clage_waterheater.clage_waterheater import (ClageWaterHeaterStatusMapper)
+from clage_waterheater import (ClageWaterHeater,ClageWaterHeaterStatusMapper)
 
 SAMPLE_API_STATUS_RESPONSE = {
     "version": "1.4",
     "error": 0,
     "time": 1631263211,
-    "success": true,
-    "cached": true,
+    "success": True,
+    "cached": True,
     "devices": [
         {
             "id": "2049DB0CD7",
             "busId": 1,
             "name": "",
-            "connected": true,
+            "connected": True,
             "signal": -67,
             "rssi": 0,
             "lqi": 0,
@@ -70,7 +69,7 @@ def mocked_requests_get(*args, **kwargs):
         return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
     return MockResponse(404, None)
 
-class TestGoeCharger(TestCase):
+class TestClageWaterHeater(TestCase):
 
     def test_create_without_host(self):
         self.assertRaises(ValueError, helper_create_instance_without_host)

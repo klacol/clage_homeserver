@@ -1,18 +1,18 @@
 from unittest import (TestCase, mock)
-from clage_waterheater.clage_waterheater import (ClageWaterHeaterStatusMapper)
+from clage_waterheater import ClageWaterHeaterStatusMapper
 
 SAMPLE_API_STATUS_RESPONSE = {
     "version": "1.4",
     "error": 0,
     "time": 1631263211,
-    "success": true,
-    "cached": true,
+    "success": True,
+    "cached": True,
     "devices": [
         {
             "id": "2049DB0CD7",
             "busId": 1,
             "name": "",
-            "connected": true,
+            "connected": True,
             "signal": -67,
             "rssi": 0,
             "lqi": 0,
@@ -49,18 +49,11 @@ class TestClageWaterHeaterStatusMapper(TestCase):
         apiResponse[key] = value
         return ClageWaterHeaterStatusMapper().mapApiStatusResponse(apiResponse)
 
-    def test_map_car(self):
-        self.assertEqual("Charger ready, no vehicle", self.__helper_get_mapped_key('car','1').get('car_status'))
-        self.assertEqual("charging", self.__helper_get_mapped_key('car','2').get('car_status'))
-        self.assertEqual("Waiting for vehicle", self.__helper_get_mapped_key('car','3').get('car_status'))
-        self.assertEqual("charging finished, vehicle still connected", self.__helper_get_mapped_key('car','4').get('car_status'))
-        self.assertEqual("unknown", self.__helper_get_mapped_key('car','5').get('car_status'))
+    def test_map_version(self):
+        self.assertEqual('unknown', self.__helper_get_mapped_key('version', 'unknown').get('homeserver_version'))
 
-    def test_map_max_current(self):
-        self.assertEqual(10, self.__helper_get_mapped_key('amp', 10).get('charger_max_current'))
-
-    def test_map_absolute_max_current(self):
-        self.assertEqual(31, self.__helper_get_mapped_key('ama', 31).get('charger_absolute_max_current'))
+    def test_map_setpoint(self):
+        self.assertEqual(600, self.__helper_get_mapped_key('setpoint', 600).get('heater_setpoint'))
 
     def test_map_charger_err(self):
         self.assertEqual("RCCB", self.__helper_get_mapped_key('err','1').get('charger_err'))
@@ -124,7 +117,6 @@ class TestClageWaterHeaterStatusMapper(TestCase):
 
     def test_map_charger_temp3(self):
         self.assertEqual(33.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp3'))
-
 
     def test_map_current_session_charged_energy(self):
         self.assertEqual(1, self.__helper_get_mapped_key('dws', 360000).get('current_session_charged_energy'))

@@ -148,12 +148,12 @@ class ClageWaterHeater:
 
 
 ######################################################################################
-from clage_waterheater import ClageWaterHeater 
-clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7') 
-response = clageWaterHeater.requestStatus()
+# from clage_waterheater import ClageWaterHeater 
+# clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7') 
+# response = clageWaterHeater.requestStatus()
 
-clageWaterHeater.setTemperature(44)
+# clageWaterHeater.setTemperature(44)
 
-print(response)
+# print(response)
 
 ######################################################################################
