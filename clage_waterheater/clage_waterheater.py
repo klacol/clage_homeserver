@@ -98,14 +98,14 @@ class ClageWaterHeater:
     username = "appuser"
     password = "smart"
 
-    def __init__(self, ipAddress,homeserverId):
+    def __init__(self, ipAddress, homeserverId):
         if (ipAddress is None or ipAddress == ''):
             raise ValueError("ipAddress must be specified")
         self.ipAddress = ipAddress
         if (homeserverId is None or homeserverId == ''):
             raise ValueError("homeserverId must be specified")
         self.homeserverId = homeserverId
-    
+
     VERSION = {
         '1.4': '1.4'
     }
@@ -132,7 +132,7 @@ class ClageWaterHeater:
         url = "https://"+self.ipAddress+"/devices/setpoint/"+self.homeserverId
         body = {'data': tempApiValue, 'cid': '1'}
 
-        setRequest = requests.put(url=url,auth=(self.username, self.password), data=body, timeout=5, verify=False)
+        setRequest = requests.put(url=url, auth=(self.username, self.password), data=body, timeout=5, verify=False)
         return ClageWaterHeaterStatusMapper().mapApiStatusResponse(setRequest.json())
 
     def requestStatus(self):
@@ -145,12 +145,12 @@ class ClageWaterHeater:
         return response
 
 ######################################################################################
-# from clage_waterheater import ClageWaterHeater 
-# clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7') 
+# from clage_waterheater import ClageWaterHeater
+# clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7')
 # response = clageWaterHeater.requestStatus()
-
+#
 # clageWaterHeater.setTemperature(44)
-
+#
 # print(response)
-
+#
 ######################################################################################
