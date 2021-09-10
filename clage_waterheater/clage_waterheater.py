@@ -23,8 +23,7 @@ class ClageWaterHeaterStatusMapper:
         homeserver_version = ClageWaterHeater.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
-        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 
-                                                                                  # => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
+        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
         homeserver_cached = bool(status.get('cached'))                            # True
 

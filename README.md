@@ -1,5 +1,5 @@
 # clage_waterheater API (WIP)
-Python API for accessing the Clage Waterheater via the local http-Endpoint
+Python API for accessing the Clage Waterheater via the local https-Endpoint
 
 Tested with the "[Clage DSX Touch](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)" with an integrated Homeserver
 
@@ -30,7 +30,7 @@ pip install clage_waterheater
 ```python
 from clage_waterheater import clage_waterheater
 
-heater = clage_waterheater('192.168.1.1','xxxxxxx') # <- change to your charger IP and your homeserver id
+heater = clage_waterheater('192.168.1.1', 'xxxxxxx') # <- change to your charger IP and your homeserver id
  
 print (heater.requestStatus())
 ```
