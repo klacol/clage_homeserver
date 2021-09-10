@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clage_waterheater",
-    version="0.0.1",
+    version="0.0.2",
     author="Klaus Aengenvoort",
     author_email="klaus.aengenvoort@gmail.com",
     description="A Python API for accessing an electrical Clage Waterheater via the Homeserver REST API",
