@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # API-documentation: https://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0
-# Reverse engineered!! Unfortunaltely, there is no official documentation from the manufacturer available
 
 import requests
 import datetime
 from json import JSONDecodeError
 
 
-class ClageWaterHeaterStatusMapper:
+class ClageHomeServerStatusMapper:
 
     def __phaseDetection(self, phase, bit):
         if phase & bit:
@@ -20,8 +19,8 @@ class ClageWaterHeaterStatusMapper:
 
         numberOfConnectedHeaters = 1  # I have only one heater, so i start with this scenario
 
-        homeserver_version = ClageWaterHeater.VERSION.get(status.get('version')) or 'unknown'       # 1.4
-        homeserver_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'             # OK
+        homeserver_version = ClageHomeServer.VERSION.get(status.get('version')) or 'unknown'       # 1.4
+        homeserver_error = ClageHomeServer.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
         homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
@@ -54,7 +53,7 @@ class ClageWaterHeaterStatusMapper:
         heater_status_fillingLeft = int(heater_status.get('fillingLeft'))         # 0
         heater_status_flags = int(heater_status.get('flags'))                     # 1
         heater_status_sysFlags = int(heater_status.get('sysFlags'))               # 0
-        heater_status_error = ClageWaterHeater.ERROR.get(status.get('error')) or 'unknown'  # OK
+        heater_status_error = ClageHomeServer.ERROR.get(status.get('error')) or 'unknown'  # OK
 
         return ({
             'homeserver_version': homeserver_version,
@@ -90,7 +89,7 @@ class ClageWaterHeaterStatusMapper:
         })
 
 
-class ClageWaterHeater:
+class ClageHomeServer:
 
     ipAddress = ""
     homeserverId = ""
@@ -132,23 +131,23 @@ class ClageWaterHeater:
         body = {'data': tempApiValue, 'cid': '1'}
 
         setRequest = requests.put(url=url, auth=(self.username, self.password), data=body, timeout=5, verify=False)
-        return ClageWaterHeaterStatusMapper().mapApiStatusResponse(setRequest.json())
+        return ClageHomeServerStatusMapper().mapApiStatusResponse(setRequest.json())
 
     def requestStatus(self):
         response = {}
         try:
             status = self.__queryStatusApi()
-            response = ClageWaterHeaterStatusMapper().mapApiStatusResponse(status)
+            response = ClageHomeServerStatusMapper().mapApiStatusResponse(status)
         except JSONDecodeError:
-            response = ClageWaterHeaterStatusMapper().mapApiStatusResponse({})
+            response = ClageHomeServerStatusMapper().mapApiStatusResponse({})
         return response
 
 ######################################################################################
-# from clage_waterheater import ClageWaterHeater
-# clageWaterHeater = ClageWaterHeater(ipAddress='192.168.0.78',homeserverId='2049DB0CD7')
-# response = clageWaterHeater.requestStatus()
+# from clage_homeserver import ClageHomeserver
+# clageHomeServer = ClageHomeServer(ipAddress='192.168.0.78',homeserverId='2049DB0CD7')
+# response = clageHomeServer.requestStatus()
 #
-# clageWaterHeater.setTemperature(44)
+# clageHomeServer.setTemperature(44)
 #
 # print(response)
 #

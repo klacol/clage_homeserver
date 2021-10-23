@@ -1,5 +1,5 @@
 from unittest import (TestCase, mock)
-from clage_waterheater import ClageWaterHeaterStatusMapper
+from clage_homeserver import ClageHomeServerStatusMapper
 
 SAMPLE_API_STATUS_RESPONSE = {
     "version": "1.4",
@@ -42,12 +42,12 @@ SAMPLE_API_STATUS_RESPONSE = {
 }
 SAMPLE_REQUEST_STATUS_RESPONSE = {}
 
-class TestClageWaterHeaterStatusMapper(TestCase):
+class TestClageHomeServerStatusMapper(TestCase):
 
     def __helper_get_mapped_key(self, key, value):
         apiResponse = dict(SAMPLE_API_STATUS_RESPONSE)
         apiResponse[key] = value
-        return ClageWaterHeaterStatusMapper().mapApiStatusResponse(apiResponse)
+        return ClageHomeServerStatusMapper().mapApiStatusResponse(apiResponse)
 
     def test_map_version(self):
         self.assertEqual('unknown', self.__helper_get_mapped_key('version', 'unknown').get('homeserver_version'))
@@ -107,16 +107,16 @@ class TestClageWaterHeaterStatusMapper(TestCase):
         self.assertEqual(32, self.__helper_get_mapped_key('tmp', 3).get('charger_temp'))
 
     def test_map_charger_temp0(self):
-        self.assertEqual(30.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp0'))
+        self.assertEqual(30.55, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp0'))
 
     def test_map_charger_temp1(self):
-        self.assertEqual(31.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp1'))
+        self.assertEqual(31.55, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp1'))
 
     def test_map_charger_temp2(self):
-        self.assertEqual(32.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp2'))
+        self.assertEqual(32.55, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp2'))
 
     def test_map_charger_temp3(self):
-        self.assertEqual(33.55, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp3'))
+        self.assertEqual(33.55, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('charger_temp3'))
 
     def test_map_current_session_charged_energy(self):
         self.assertEqual(1, self.__helper_get_mapped_key('dws', 360000).get('current_session_charged_energy'))
@@ -158,22 +158,22 @@ class TestClageWaterHeaterStatusMapper(TestCase):
         self.assertEqual(200, self.__helper_get_mapped_key('tds', '200').get('timezone_dst_offset'))
 
     def test_map_meter_values(self):
-        self.assertEqual(1, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l1'))
-        self.assertEqual(2, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l2'))
-        self.assertEqual(3, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l3'))
-        self.assertEqual(4, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_n'))
-        self.assertEqual(0.5, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l1'))
-        self.assertEqual(0.6, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l2'))
-        self.assertEqual(0.7, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l3'))
-        self.assertEqual(0.8, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l1'))
-        self.assertEqual(0.9, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l2'))
-        self.assertEqual(1.0, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l3'))
-        self.assertEqual(1.1, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_n'))
-        self.assertEqual(0.12, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_all'))
-        self.assertEqual(13, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l1'))
-        self.assertEqual(14, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l2'))
-        self.assertEqual(15, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l3'))
-        self.assertEqual(16, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_n'))
-        self.assertEqual(0, ClageWaterHeaterStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('cable_lock_mode'))
+        self.assertEqual(1, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l1'))
+        self.assertEqual(2, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l2'))
+        self.assertEqual(3, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_l3'))
+        self.assertEqual(4, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('u_n'))
+        self.assertEqual(0.5, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l1'))
+        self.assertEqual(0.6, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l2'))
+        self.assertEqual(0.7, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('i_l3'))
+        self.assertEqual(0.8, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l1'))
+        self.assertEqual(0.9, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l2'))
+        self.assertEqual(1.0, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_l3'))
+        self.assertEqual(1.1, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_n'))
+        self.assertEqual(0.12, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('p_all'))
+        self.assertEqual(13, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l1'))
+        self.assertEqual(14, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l2'))
+        self.assertEqual(15, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_l3'))
+        self.assertEqual(16, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('lf_n'))
+        self.assertEqual(0, ClageHomeServerStatusMapper().mapApiStatusResponse(SAMPLE_API_STATUS_RESPONSE).get('cable_lock_mode'))
 
     
