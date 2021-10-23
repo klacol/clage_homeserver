@@ -1,7 +1,9 @@
-# clage_waterheater API (WIP)
-Python API for accessing the Clage Waterheater via the local https-Endpoint
+# clage-homeserver-api (WIP)
+Python API for accessing the Clage Waterheater via the local https-Endpoint of the clage Homeserver
 
-Tested with the "[Clage DSX Touch](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)" with an integrated Homeserver
+Tested with the "[Clage DSX Touch](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)" with an integrated Homeserver.
+
+Based on the [API documentation version 1.3.4](https://api-docs/CLAGE HomeServer API v1.3.4.pdf).
 
 # Warning: WIP - Breaking changes possible
 This is the first version of the API so there are still breaking chnages possible eg. output parameter names or values.
@@ -9,11 +11,11 @@ This is the first version of the API so there are still breaking chnages possibl
 # Links
 [Product Homepage](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)
 
-[API-Documentation](ttps://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
+[Openapi Document](ttps://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
 
-[Project Homepage](https://github.com/klacol/clage_waterheater)
+[Project Homepage](https://github.com/klacol/clage_homeserver-api)
 
-[PyPi Package](https://pypi.org/project/clage_waterheater/)
+[PyPi Package](https://pypi.org/project/clage_homeserver-api)
 
 # Features
 - Query Heater Status
@@ -22,15 +24,15 @@ This is the first version of the API so there are still breaking chnages possibl
 # Install
 
 ```
-pip install clage_waterheater
+pip install clage_homeserver
 ```
 
 # Example
 
 ```python
-from clage_waterheater import clage_waterheater
+from clage_homeserver import clage_homeserver
 
-heater = clage_waterheater('192.168.1.1', 'xxxxxxx') # <- change to your charger IP and your homeserver id
+heater = clage_homeserver('192.168.1.1', 'xxxxxxx') # <- change to your charger IP and your homeserver id
  
 print (heater.requestStatus())
 ```
