@@ -1,0 +1,489 @@
+---
+swagger: "2.0"
+info:
+  description: "# Introduction\n\nThe API for the Clage Homeserver (Electrical water heater, e.g. a DSX Touch). This API was reverse  engineered\nfrom a bought device. Alle rights stay with CLAGE GmbH, Pirolweg 4, 21337 Lüneburg, Germany. \n\n# First steps:\n* Bring your Device in the Wlan and connect the Homeserver as desribed by Clage\n* Find out the IP-Adress of the device (e.g. with the help of you router)\n* Try out the API, based on this documentation\n"
+  version: "1.4"
+  title: clage-homeserver-api
+host: virtserver.swaggerhub.com
+basePath: /klacol/ClageHomeServer/1.4
+schemes:
+- https
+consumes:
+- application/json
+- application/x-www-form-urlencoded
+produces:
+- application/json
+paths:
+  /devices/status/{serverId}:
+    get:
+      tags:
+      - Status
+      description: Returns the status of the homeserver and the connected electrical water heater
+      operationId: getStatus
+      parameters:
+      - name: serverId
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The response is ok
+          schema:
+            $ref: '#/definitions/DeviceStatus'
+  /devices/setpoint/{serverId}:
+    put:
+      tags:
+      - Manage
+      description: Sets the acutal temparture of the water heater
+      operationId: setTemperature
+      parameters:
+      - name: serverId
+        in: path
+        description: The id of the device. This is shown in the display of you home server
+        required: true
+        type: string
+      - name: data
+        in: formData
+        description: the new value of the temperature. 450 = 45,0 °C. It can be changed in steps of 0.1 K.
+        required: true
+        type: number
+      - name: cid
+        in: formData
+        description: undocumented
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The temperature was set
+          schema:
+            $ref: '#/definitions/DeviceStatus'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/BadRequest'
+  /devices/{lp}:
+    get:
+      tags:
+      - Status
+      description: Returns information about the basic setup of the device
+      operationId: getSetup
+      parameters:
+      - name: lp
+        in: path
+        required: true
+        type: number
+      responses:
+        "200":
+          description: The response contains a document, that descibed the basic setup of the device
+          schema:
+            $ref: '#/definitions/BasicSetup'
+  /devices/logs/{serverId}:
+    get:
+      tags:
+      - Status
+      description: Returns the historical log of the device, including the consumptions statistics
+      operationId: getLog
+      parameters:
+      - name: serverId
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The response contains a document, that descibed the basic setup of the device
+          schema:
+            $ref: '#/definitions/DeviceLog'
+definitions:
+  activity:
+    type: number
+    description: undocumented
+    example: 1631202087
+  address:
+    type: number
+    description: undocumented
+    example: 100
+  access:
+    type: number
+    description: undocumented
+    example: 65535
+  busId:
+    type: number
+    description: undocumented
+    example: 1
+  cached:
+    type: boolean
+    description: undocumented
+    example: true
+  channel:
+    type: string
+    description: undocumented
+    example: 106
+  connected:
+    type: boolean
+    description: undocumented
+    example: true
+  error:
+    type: number
+    description: The error code of the homeserver (0 = no error)
+    example: 0
+  fillingLeft:
+    type: number
+    description: undocumented
+    example: 0
+  flags:
+    type: number
+    description: undocumented
+    example: 1
+  flow:
+    type: number
+    description: undocumented
+    example: 0
+  flowMax:
+    type: number
+    description: undocumented
+    example: 254
+  id:
+    type: string
+    description: the serial number of the heater
+    example: 2049DB0CD7
+  lqi:
+    type: number
+    description: undocumented
+    example: 0
+  name:
+    type: string
+    description: undocumented
+    example: DSX Server 0CD7
+  rev:
+    type: number
+    description: undocumented
+    example: 204
+  rssi:
+    type: number
+    description: undocumented
+    example: 0
+  signal:
+    type: number
+    description: the strenght of the wifi signal that can be retrieved by the homeserver
+    example: -66
+  success:
+    type: boolean
+    description: undocumented
+    example: true
+  setpoint:
+    type: number
+    description: the actual configured temperature off the device. 350 = 35,0 °C. It can be changed in steps of 0.1 K.
+    example: 350
+  serverUri:
+    type: number
+    description: undocumented
+    example: 0
+  serverCh:
+    type: number
+    description: undocumented
+    example: 100
+  serverAddr:
+    type: number
+    description: undocumented
+    example: 100
+  tLimit:
+    type: number
+    description: 'The maximum temperature that is configured, the maximum outlet temperature can be limited to any value within the temperature setting range. Notes: If the instantaneous waterheater is equipped with a remote control and the unit supplies a shower, the maximum  temperature was limited during installation and can only be temperature was limited during the unit installation and can only be changed below this temperature. The temperature limit cannot be completely deactivated in this case.'
+    example: 0
+  tIn:
+    type: number
+    description: The temperature on the inbound pipe (e.g. from your water supply or a pre mounted solar heater). 203 = 20.3 °C.
+    example: 203
+  tOut:
+    type: number
+    description: The temperature on the outbound pipe (for you shower supply). 427 = 42.7 °C.
+    example: 427
+  tP1:
+    type: number
+    description: undocumented
+    example: 0
+  tP2:
+    type: number
+    description: undocumented
+    example: 0
+  tP3:
+    type: number
+    description: undocumented
+    example: 0
+  tP4:
+    type: number
+    description: undocumented
+    example: 0
+  valvePos:
+    type: number
+    description: The position of the internal valve of the heater in percent. 0 = closed. 100 = open
+    example: 71
+  valveFlags:
+    type: number
+    description: undocumented
+    example: 0
+  power:
+    type: number
+    description: undocumented
+    example: 0
+  powerMax:
+    type: number
+    description: the maximum power in kW*10. E.g. the value of 140 are 14.0 kW
+    example: 140
+  power100:
+    type: number
+    description: undocumented
+    example: 0
+  sysFlags:
+    type: number
+    description: undocumented
+    example: 0
+  time:
+    type: number
+    description: The time of the device in the format of Epoch & Unix Timestamp, see here (https://www.epochconverter.com)
+    example: 1631192655
+  version:
+    type: string
+    description: The version of the homeserver
+    example: 1.4
+  BadRequest:
+    type: object
+    properties:
+      version:
+        $ref: '#/definitions/version'
+      error:
+        $ref: '#/definitions/error'
+      time:
+        $ref: '#/definitions/time'
+      success:
+        $ref: '#/definitions/success'
+  DeviceStatus:
+    type: object
+    properties:
+      version:
+        $ref: '#/definitions/version'
+      error:
+        $ref: '#/definitions/error'
+      time:
+        $ref: '#/definitions/time'
+      success:
+        $ref: '#/definitions/success'
+      cached:
+        $ref: '#/definitions/cached'
+      devices:
+        type: array
+        description: One Homeserver can control many heaters. This is the list of the hetaers, that are connected to the homeserver
+        items:
+          $ref: '#/definitions/DeviceStatus_devices'
+    description: The document with the status information about the device
+  iot:
+    type: object
+    properties:
+      state:
+        type: string
+        example: ONLINE
+        description: Connection state to Clage Cloud
+  server:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      name:
+        $ref: '#/definitions/name'
+      channel:
+        $ref: '#/definitions/channel'
+      address:
+        $ref: '#/definitions/address'
+      version:
+        $ref: '#/definitions/version'
+      iot:
+        $ref: '#/definitions/iot'
+  info:
+    type: object
+    properties:
+      setpoint:
+        $ref: '#/definitions/setpoint'
+      tLimit:
+        $ref: '#/definitions/tLimit'
+      fillingLeft:
+        $ref: '#/definitions/fillingLeft'
+      access:
+        $ref: '#/definitions/access'
+      flags:
+        $ref: '#/definitions/flags'
+      sysFlags:
+        $ref: '#/definitions/sysFlags'
+      valvePos:
+        $ref: '#/definitions/valvePos'
+      valveFlags:
+        $ref: '#/definitions/valveFlags'
+      error:
+        $ref: '#/definitions/error'
+      activity:
+        $ref: '#/definitions/activity'
+      serverUri:
+        $ref: '#/definitions/serverUri'
+      serverCh:
+        $ref: '#/definitions/serverCh'
+      serverAddr:
+        $ref: '#/definitions/serverAddr'
+  BasicSetup:
+    type: object
+    properties:
+      rev:
+        $ref: '#/definitions/rev'
+      version:
+        $ref: '#/definitions/version'
+      error:
+        $ref: '#/definitions/error'
+      time:
+        $ref: '#/definitions/time'
+      success:
+        $ref: '#/definitions/success'
+      server:
+        $ref: '#/definitions/server'
+      devices:
+        type: array
+        description: undocumented
+        items:
+          $ref: '#/definitions/BasicSetup_devices'
+  DeviceLog:
+    type: object
+    properties:
+      version:
+        $ref: '#/definitions/version'
+      error:
+        $ref: '#/definitions/error'
+      time:
+        $ref: '#/definitions/time'
+      success:
+        $ref: '#/definitions/success'
+      devices:
+        type: array
+        description: undocumented
+        items:
+          $ref: '#/definitions/DeviceLog_devices'
+  DeviceStatus_status:
+    type: object
+    properties:
+      setpoint:
+        $ref: '#/definitions/setpoint'
+      tLimit:
+        $ref: '#/definitions/tLimit'
+      tIn:
+        $ref: '#/definitions/tIn'
+      tOut:
+        $ref: '#/definitions/tOut'
+      tP1:
+        $ref: '#/definitions/tP1'
+      tP2:
+        $ref: '#/definitions/tP2'
+      tP3:
+        $ref: '#/definitions/tP3'
+      tP4:
+        $ref: '#/definitions/tP4'
+      flow:
+        $ref: '#/definitions/flow'
+      flowMax:
+        $ref: '#/definitions/flowMax'
+      valvePos:
+        $ref: '#/definitions/valvePos'
+      valveFlags:
+        $ref: '#/definitions/valveFlags'
+      power:
+        $ref: '#/definitions/power'
+      powerMax:
+        $ref: '#/definitions/powerMax'
+      power100:
+        $ref: '#/definitions/power100'
+      fillingLeft:
+        $ref: '#/definitions/fillingLeft'
+      flags:
+        $ref: '#/definitions/flags'
+      sysFlags:
+        $ref: '#/definitions/sysFlags'
+      error:
+        $ref: '#/definitions/error'
+  DeviceStatus_devices:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      busId:
+        $ref: '#/definitions/busId'
+      name:
+        $ref: '#/definitions/name'
+      connected:
+        $ref: '#/definitions/connected'
+      signal:
+        $ref: '#/definitions/signal'
+      rssi:
+        $ref: '#/definitions/rssi'
+      lqi:
+        $ref: '#/definitions/lqi'
+      status:
+        $ref: '#/definitions/DeviceStatus_status'
+  BasicSetup_devices:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      busId:
+        $ref: '#/definitions/busId'
+      name:
+        $ref: '#/definitions/name'
+      connected:
+        $ref: '#/definitions/connected'
+      signal:
+        $ref: '#/definitions/signal'
+      rssi:
+        $ref: '#/definitions/rssi'
+      lqi:
+        $ref: '#/definitions/lqi'
+      info:
+        $ref: '#/definitions/info'
+  DeviceLog_logs:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      time:
+        $ref: '#/definitions/time'
+      length:
+        type: number
+        example: 72.0
+        description: The durance of the usage sessions. 72 = 7.2 seconds
+      power:
+        type: number
+        example: 391.0
+        description: The energy that was consumed in the usage sessions. 391 = 0.391 kWh
+      water:
+        type: number
+        example: 1073.0
+        description: The volume of waterconsumed in the usage sessions. 1073 = 1.073 Liter
+      cid:
+        type: number
+        example: 72.0
+        description: undocumented, probably Crime Investigation Unit :-)
+  DeviceLog_devices:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/id'
+      busId:
+        $ref: '#/definitions/busId'
+      name:
+        $ref: '#/definitions/name'
+      connected:
+        $ref: '#/definitions/connected'
+      signal:
+        $ref: '#/definitions/signal'
+      rssi:
+        $ref: '#/definitions/rssi'
+      lqi:
+        $ref: '#/definitions/lqi'
+      logs:
+        type: array
+        description: A list of usage sessions
+        items:
+          $ref: '#/definitions/DeviceLog_logs'
