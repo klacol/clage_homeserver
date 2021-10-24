@@ -45,18 +45,18 @@ SAMPLE_REQUEST_STATUS_RESPONSE = {}
 SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL = {}
 
 def helper_create_instance_without_host():
-    return ClageHomeServer(None,None)
+    return ClageHomeServer(None,None,None)
 
 def helper_setButtonCurrentValue_ValueError():
-    return ClageHomeServer('https://192.168.0.78','2049DB0CD7').setButtonCurrentValue(0,6)
+    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setButtonCurrentValue(0,6)
 
 def helper_setAccessType_ValueError():
-    return ClageHomeServer('https://192.168.0.78','2049DB0CD7').setAccessType(1111)
+    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAccessType(1111)
 
 def helper_setCableLockMode_ValueError():
-    return ClageHomeServer('https://192.168.0.78','2049DB0CD7').setCableLockMode(1111)
+    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setCableLockMode(1111)
 
-def mocked_requests_get(*args, **kwargs):
+def mocked_request_status(*args, **kwargs):
     class MockResponse:
         def __init__(self, status_code, response):
             self._response = response
@@ -65,7 +65,7 @@ def mocked_requests_get(*args, **kwargs):
         def json(self):
             return self._response
 
-    if args[0] == 'https://192.168.0.78/status':
+    if args[0] == '192.168.0.78':
         return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
     return MockResponse(404, None)
 
@@ -75,92 +75,93 @@ class TestClageHomeserver(TestCase):
         self.assertRaises(ValueError, helper_create_instance_without_host)
 
     def test_create_with_host(self):
-        self.assertIsNotNone(ClageHomeServer('https://192.168.0.78','2049DB0CD7'))
+        self.assertIsNotNone(ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7'))
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_requestStatus(self, mock_get):
-        status = ClageHomeServer('https://192.168.0.78/status','2049DB0CD7').requestStatus()
+    @mock.patch('requestStatus', side_effect=mocked_request_status)
+    def test_requestStatus(self, mock_requestStatus):
+        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7') 
+        status = clageHomeServer.requestStatus()
         self.assertEqual(SAMPLE_API_STATUS_RESPONSE, status)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setTemperature(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setTemperature(450)
-        mock_get.assert_called_once_with('https://192.168.0.78/x')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setTemperature(450)
+        mock_get.assert_called_once_with('192.168.0.78/x')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setMaxCurrentToHigh(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setMaxCurrent(33)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=amp=32')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setMaxCurrent(33)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=amp=32')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setLedAutoTurnOffTrue(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setLedAutoTurnOff(True)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=r2x=1')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedAutoTurnOff(True)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=r2x=1')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setAllowChargingTrue(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setAllowCharging(True)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=alw=1')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAllowCharging(True)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=alw=1')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setAllowChargingFalse(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setAllowCharging(False)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=alw=0')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAllowCharging(False)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=alw=0')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setAutoStopTrue(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setAutoStop(True)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=stp=2')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAutoStop(True)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=stp=2')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setAutoStopFalse(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setAutoStop(False)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=stp=0')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAutoStop(False)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=stp=0')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setStandbyColor(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setStandbyColor(0x808080)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=cid=8421504')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setStandbyColor(0x808080)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=cid=8421504')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setChargingActiveColor(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setChargingActiveColor(0x808080)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=cch=8421504')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setChargingActiveColor(0x808080)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=cch=8421504')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setChargingFinishedColor(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setChargingFinishedColor(0x808080)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=cfi=8421504')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setChargingFinishedColor(0x808080)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=cfi=8421504')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setLedBrightness(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setLedBrightness(100)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=lbr=100')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedBrightness(100)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=lbr=100')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setLedBrightnessToLow(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setLedBrightness(-1)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=lbr=0')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedBrightness(-1)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=lbr=0')
         self.assertIsNotNone(response)
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_setLedBrightnessToHigh(self, mock_get):
-        response = ClageHomeServer('https://192.168.0.78','2049DB0CD7').setLedBrightness(256)
-        mock_get.assert_called_once_with('https://192.168.0.78/mqtt?payload=lbr=255')
+        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedBrightness(256)
+        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=lbr=255')
         self.assertIsNotNone(response)
 
     def test_chargerNotAvailable(self):
-        status = ClageHomeServer('http://127.0.0.2','2049DB0CD7').requestStatus()
+        status = ClageHomeServer('127.0.0.2','F8F005DB0CD7','2049DB0CD7').requestStatus()
         self.maxDiff = None
         self.assertEqual(SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL, status)

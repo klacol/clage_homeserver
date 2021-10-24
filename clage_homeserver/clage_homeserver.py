@@ -125,21 +125,21 @@ class ClageHomeServer:
     def __queryStatusApi(self):
         try:
             urllib3.disable_warnings()
-            rev=1; 
-            while (1): 
-                url = "https://"+self.ipAddress+"/devices?lp="+str(rev)+"&showBusId=1&showErrors=1&showLogs=1&showTotal=1"
-                # Use HTTP Long Polling (lp); see API docs
-                long_polling_timeout = 35 # greater than 30 Seconds; after 30 Seconds the server terminated the long polling request automatically
-
-                statusRequest = requests.get(url, auth=(self.username, self.password), timeout=long_polling_timeout, verify=False)
-                status_resonse_json = statusRequest.json() 
-                rev_old=rev
-                rev=status_resonse_json['rev']
-                temperature = status_resonse_json['devices'][0]['info']['setpoint']
-                if (rev != rev_old):
-                  print(str(datetime.today()) + ' - changed: setpoint = '+str(int(temperature)/10) + ' °C')
-                else:
-                  print(str(datetime.today()) + ' - unchanged: setpoint = '+str(int(temperature)/10) + ' °C')   
+            
+            # Use HTTP Long Polling (lp); see API docs
+            # rev=1; 
+            # while (1): 
+            #     url = "https://"+self.ipAddress+"/devices?lp="+str(rev)+"&showBusId=1&showErrors=1&showLogs=1&showTotal=1"   
+            #     long_polling_timeout = 35 # greater than 30 Seconds; after 30 Seconds the server terminated the long polling request automatically
+            #     statusRequest = requests.get(url, auth=(self.username, self.password), timeout=long_polling_timeout, verify=False)
+            #     status_resonse_json = statusRequest.json() 
+            #     rev_old=rev
+            #     rev=status_resonse_json['rev']
+            #     temperature = status_resonse_json['devices'][0]['info']['setpoint']
+            #     if (rev != rev_old):
+            #       print(str(datetime.today()) + ' - changed: setpoint = '+str(int(temperature)/10) + ' °C')
+            #     else:
+            #       print(str(datetime.today()) + ' - unchanged: setpoint = '+str(int(temperature)/10) + ' °C')   
             
 
             url = "https://"+self.ipAddress+"/devices/status/"+self.heaterId
