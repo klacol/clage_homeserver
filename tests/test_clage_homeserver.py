@@ -69,7 +69,7 @@ def mocked_requests_get(*args, **kwargs):
         return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
     return MockResponse(404, None)
 
-class TestClageWaterHeater(TestCase):
+class TestClageHomeserver(TestCase):
 
     def test_create_without_host(self):
         self.assertRaises(ValueError, helper_create_instance_without_host)

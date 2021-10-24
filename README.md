@@ -1,5 +1,5 @@
-# clage-homeserver-api (WIP)
-Python API for accessing the Clage Waterheater via the local https-Endpoint of the clage Homeserver
+# clage_homeserver (WIP)
+Python client for accessing the Clage Waterheater via the local https-Rest-API-Endpoint of the clage Homeserver
 
 Tested with the "[Clage DSX Touch](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)" with an integrated Homeserver.
 
@@ -13,9 +13,9 @@ This is the first version of the API so there are still breaking chnages possibl
 
 [Openapi Document](ttps://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
 
-[Project Homepage](https://github.com/klacol/clage_homeserver-api)
+[Project Homepage](https://github.com/klacol/clage_homeserver)
 
-[PyPi Package](https://pypi.org/project/clage_homeserver-api)
+[PyPi Package](https://pypi.org/project/clage_homeserver)
 
 # Features
 - Query Heater Status
@@ -30,9 +30,10 @@ pip install clage_homeserver
 # Example
 
 ```python
-from clage_homeserver import clage_homeserver
-
-heater = clage_homeserver('192.168.1.1', 'xxxxxxx') # <- change to your charger IP and your homeserver id
+from clage_homeserver import ClageHomeServer
+clageHomeServer = ClageHomeServer('192.168.0.78','Your Homeserver ID','Your Heater ID') # <- change to your charger IP, and lookup the ID's in the Clage App
  
-print (heater.requestStatus())
+print (clageHomeServer.requestStatus())
+
+clageHomeServer.setTemperature(456)
 ```

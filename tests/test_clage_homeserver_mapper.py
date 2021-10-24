@@ -118,15 +118,6 @@ class TestClageHomeServerStatusMapper(TestCase):
         self.assertEqual('connected', self.__helper_get_mapped_key('wst', '3').get('wifi'))
         self.assertEqual('not connected', self.__helper_get_mapped_key('wst', '0').get('wifi'))
 
-    def test_map_firmware(self):
-        self.assertEqual('33', self.__helper_get_mapped_key('fwv', '33').get('firmware'))
-
-    def test_map_serial(self):
-        self.assertEqual('123456', self.__helper_get_mapped_key('sse', '123456').get('serial_number'))
-
-    def test_map_wifi_ssid(self):
-        self.assertEqual('ssid', self.__helper_get_mapped_key('wss', 'ssid').get('wifi_ssid'))
-
     def test_map_wifi_enabled(self):
         self.assertEqual('off', self.__helper_get_mapped_key('wen', '0').get('wifi_enabled'))
         self.assertEqual('on', self.__helper_get_mapped_key('wen', '1').get('wifi_enabled'))
