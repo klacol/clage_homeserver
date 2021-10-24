@@ -3,4 +3,6 @@ clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7') # 
  
 print (clageHomeServer.requestStatus())
 
+#clageHomeServer.setTemperature(456)
+
  
