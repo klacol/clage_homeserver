@@ -83,26 +83,6 @@ class TestClageHomeServerStatusMapper(TestCase):
         self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x08).get('pre_contactor_l1'))
         self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('pre_contactor_l1'))
 
-    def test_map_pre_contactor_l2(self):
-        self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x10).get('pre_contactor_l2'))
-        self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('pre_contactor_l2'))
-
-    def test_map_pre_contactor_l3(self):
-        self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x20).get('pre_contactor_l3'))
-        self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('pre_contactor_l3'))
-
-    def test_map_post_contactor_l1(self):
-        self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x01).get('post_contactor_l1'))
-        self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('post_contactor_l1'))
-
-    def test_map_post_contactor_l2(self):
-        self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x02).get('post_contactor_l2'))
-        self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('post_contactor_l2'))
-
-    def test_map_post_contactor_l3(self):
-        self.assertEqual('on', self.__helper_get_mapped_key('pha', 0x04).get('post_contactor_l3'))
-        self.assertEqual('off', self.__helper_get_mapped_key('pha', 0x00).get('post_contactor_l3'))
-
     def test_map_charger_temp(self):
         self.assertEqual(32, self.__helper_get_mapped_key('tmp', 3).get('charger_temp'))
 
