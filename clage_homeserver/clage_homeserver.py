@@ -93,16 +93,21 @@ class ClageHomeServer:
 
     ipAddress = ""
     homeserverId = ""
+    heaterId = ""
     username = "appuser"
     password = "smart"
 
-    def __init__(self, ipAddress, homeserverId):
+    def __init__(self, ipAddress, homeserverId, heaterId):
         if (ipAddress is None or ipAddress == ''):
             raise ValueError("ipAddress must be specified")
         self.ipAddress = ipAddress
         if (homeserverId is None or homeserverId == ''):
             raise ValueError("homeserverId must be specified")
         self.homeserverId = homeserverId
+        if (heaterId is None or heaterId == ''):
+            raise ValueError("heaterId must be specified")
+        self.heaterId = heaterId
+
 
     VERSION = {
         '1.4': '1.4'
@@ -118,7 +123,7 @@ class ClageHomeServer:
 
     def __queryStatusApi(self):
         try:
-            url = "https://"+self.ipAddress+"/devices/status/"+self.homeserverId
+            url = "https://"+self.ipAddress+"/devices/status/"+self.heaterId
             statusRequest = requests.get(url, auth=(self.username, self.password), timeout=5, verify=False)
             status = statusRequest.json()
             return status
