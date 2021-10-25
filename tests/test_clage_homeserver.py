@@ -1,5 +1,7 @@
 from unittest import (TestCase, mock)
-from clage_homeserver import (ClageHomeServer,ClageHomeServerStatusMapper)
+TestCase.maxDiff = None
+from clage_homeserver import (ClageHomeServer)
+from clage_homeserver.clage_homeserver import (ClageHomeServerStatusMapper)
 
 SAMPLE_API_STATUS_RESPONSE = {
     "version": "1.4",
@@ -13,21 +15,21 @@ SAMPLE_API_STATUS_RESPONSE = {
             "busId": 1,
             "name": "",
             "connected": True,
-            "signal": -67,
+            "signal": -72,
             "rssi": 0,
             "lqi": 0,
             "status": {
                 "setpoint": 600,
                 "tLimit": 0,
-                "tIn": 274,
-                "tOut": 244,
+                "tIn": 229,
+                "tOut": 188,
                 "tP1": 0,
                 "tP2": 0,
                 "tP3": 0,
                 "tP4": 0,
                 "flow": 0,
-                "flowMax": 254,
-                "valvePos": 71,
+                "flowMax": 250,
+                "valvePos": 34,
                 "valveFlags": 0,
                 "power": 0,
                 "powerMax": 140,
@@ -41,7 +43,7 @@ SAMPLE_API_STATUS_RESPONSE = {
     ]
 }
 
-SAMPLE_REQUEST_STATUS_RESPONSE = {}
+SAMPLE_REQUEST_STATUS_RESPONSE = {'homeserver_version': '1.4', 'homeserver_error': 'OK', 'homeserver_time': '2021-09-10 10:40:11', 'homeserver_success': True, 'homeserver_cached': True, 'heater_id': '2049DB0CD7', 'heater_busId': 1, 'heater_name': '', 'heater_connected': True, 'heater_signal': -72, 'heater_rssi': 0, 'heater_lqi': 0, 'heater_status_setpoint': 60.0, 'heater_status_tIn': 22.9, 'heater_status_tOut': 18.8, 'heater_status_tP1': 0.0, 'heater_status_tP2': 0.0, 'heater_status_tP3': 0.0, 'heater_status_tP4': 0.0, 'heater_status_flow': 0.0, 'heater_status_flowMax': 0.0025, 'heater_status_valvePos': 34, 'heater_status_valveFlags': 0, 'heater_status_power': 0.0, 'heater_status_powerMax': 14.0, 'heater_status_power100': 0.0, 'heater_status_fillingLeft': 0, 'heater_status_flags': 1, 'heater_status_sysFlags': 0, 'heater_status_error': 'OK'}
 SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL = {}
 
 def helper_create_instance_without_host():
@@ -65,7 +67,20 @@ def mocked_request_status(*args, **kwargs):
         def json(self):
             return self._response
 
-    if args[0] == '192.168.0.78':
+    if args[0] == 'https://192.168.0.78/devices/status/2049DB0CD7':
+        return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
+    return MockResponse(404, None)
+
+def mocked_temperature_payload(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, status_code, response):
+            self._response = response
+            self.status_code = status_code
+
+        def json(self):
+            return self._response
+
+    if args[0] == 'https://192.168.0.78/devices/status/2049DB0CD7':
         return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
     return MockResponse(404, None)
 
@@ -77,34 +92,16 @@ class TestClageHomeserver(TestCase):
     def test_create_with_host(self):
         self.assertIsNotNone(ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7'))
 
-    @mock.patch('requestStatus', side_effect=mocked_request_status)
-    def test_requestStatus(self, mock_requestStatus):
+    @mock.patch('requests.get', side_effect=mocked_request_status)
+    def test_requestStatus(self, mock_get):
         clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7') 
         status = clageHomeServer.requestStatus()
-        self.assertEqual(SAMPLE_API_STATUS_RESPONSE, status)
+        self.assertEqual(SAMPLE_REQUEST_STATUS_RESPONSE, status)
 
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setTemperature(self, mock_get):
+    @mock.patch('requests.put', side_effect=mocked_temperature_payload)
+    def test_setTemperature(self, mock_put):
         response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setTemperature(450)
-        mock_get.assert_called_once_with('192.168.0.78/x')
-        self.assertIsNotNone(response)
-
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setMaxCurrentToHigh(self, mock_get):
-        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setMaxCurrent(33)
-        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=amp=32')
-        self.assertIsNotNone(response)
-
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setLedAutoTurnOffTrue(self, mock_get):
-        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedAutoTurnOff(True)
-        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=r2x=1')
-        self.assertIsNotNone(response)
-
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setAllowChargingTrue(self, mock_get):
-        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAllowCharging(True)
-        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=alw=1')
+        mock_put.assert_called_once_with('url=''https://192.168.0.78/devices/setpoint/2049DB0CD7'', auth=(''appuser'', ''smart''), data={''data'': ''4500'', ''cid'': ''1''}, timeout=5, verify=False')
         self.assertIsNotNone(response)
 
     @mock.patch('requests.get', side_effect=mocked_request_status)

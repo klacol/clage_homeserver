@@ -23,7 +23,7 @@ class ClageHomeServerStatusMapper:
         homeserver_version = ClageHomeServer.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageHomeServer.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
-        homeserver_time = datetime.datetime.fromtimestamp(posixTimestamp)         # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
+        homeserver_time = str(datetime.fromtimestamp(posixTimestamp))             # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
         homeserver_cached = bool(status.get('cached'))                            # True
 
@@ -38,8 +38,8 @@ class ClageHomeServerStatusMapper:
 
         heater_status = heater.get('status')
         heater_status_setpoint = float(heater_status.get('setpoint'))/10          # 600 => 60 °C
-        heater_status_tInint = float(heater_status.get('tIn'))/10                 # 274 => 27.4 °C
-        heater_status_tOutint = float(heater_status.get('tOut'))/10               # 244 => 24.4 °C
+        heater_status_tIn = float(heater_status.get('tIn'))/10                    # 274 => 27.4 °C
+        heater_status_tOut = float(heater_status.get('tOut'))/10                  # 244 => 24.4 °C
         heater_status_tP1 = float(heater_status.get('tP1'))/10                    # 0
         heater_status_tP2 = float(heater_status.get('tP2'))/10                    # 0
         heater_status_tP3 = float(heater_status.get('tP3'))/10                    # 0
@@ -54,7 +54,7 @@ class ClageHomeServerStatusMapper:
         heater_status_fillingLeft = int(heater_status.get('fillingLeft'))         # 0
         heater_status_flags = int(heater_status.get('flags'))                     # 1
         heater_status_sysFlags = int(heater_status.get('sysFlags'))               # 0
-        heater_status_error = ClageHomeServer.ERROR.get(status.get('error')) or 'unknown'  # OK
+        heater_status_error = ClageHomeServer.ERROR.get(heater_status.get('error')) or 'unknown'  # OK
 
         return ({
             'homeserver_version': homeserver_version,
@@ -70,8 +70,8 @@ class ClageHomeServerStatusMapper:
             'heater_rssi': heater_rssi,
             'heater_lqi': heater_lqi,
             'heater_status_setpoint': heater_status_setpoint,
-            'heater_status_tInint': heater_status_tInint,
-            'heater_status_tOutint': heater_status_tOutint,
+            'heater_status_tIn': heater_status_tIn,
+            'heater_status_tOut': heater_status_tOut,
             'heater_status_tP1': heater_status_tP1,
             'heater_status_tP2': heater_status_tP2,
             'heater_status_tP3': heater_status_tP3,
