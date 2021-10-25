@@ -13,7 +13,7 @@ SAMPLE_API_STATUS_RESPONSE = {
         {
             "id": "2049DB0CD7",
             "busId": 1,
-            "name": "",
+            "name": "NameOfMyHeater",
             "connected": True,
             "signal": -72,
             "rssi": 0,
@@ -43,7 +43,39 @@ SAMPLE_API_STATUS_RESPONSE = {
     ]
 }
 
-SAMPLE_REQUEST_STATUS_RESPONSE = {'homeserver_version': '1.4', 'homeserver_error': 'OK', 'homeserver_time': '2021-09-10 08:40:11', 'homeserver_success': True, 'homeserver_cached': True, 'heater_id': '2049DB0CD7', 'heater_busId': 1, 'heater_name': '', 'heater_connected': True, 'heater_signal': -72, 'heater_rssi': 0, 'heater_lqi': 0, 'heater_status_setpoint': 60.0, 'heater_status_tIn': 22.9, 'heater_status_tOut': 18.8, 'heater_status_tP1': 0.0, 'heater_status_tP2': 0.0, 'heater_status_tP3': 0.0, 'heater_status_tP4': 0.0, 'heater_status_flow': 0.0, 'heater_status_flowMax': 0.0025, 'heater_status_valvePos': 34, 'heater_status_valveFlags': 0, 'heater_status_power': 0.0, 'heater_status_powerMax': 14.0, 'heater_status_power100': 0.0, 'heater_status_fillingLeft': 0, 'heater_status_flags': 1, 'heater_status_sysFlags': 0, 'heater_status_error': 'OK'}
+SAMPLE_REQUEST_STATUS_RESPONSE = {
+    "homeserver_version": "1.4",
+    "homeserver_error": "OK",
+    "homeserver_time": "2021-09-10 08:40:11",
+    "homeserver_success": True,
+    "homeserver_cached": True,
+    "heater_id": "2049DB0CD7",
+    "heater_busId": 1,
+    "heater_name": "NameOfMyHeater",
+    "heater_connected": True,
+    "heater_signal": -72,
+    "heater_rssi": 0,
+    "heater_lqi": 0,
+    "heater_status_setpoint": 60,
+    "heater_status_tIn": 22.9,
+    "heater_status_tOut": 18.8,
+    "heater_status_tP1": 0,
+    "heater_status_tP2": 0,
+    "heater_status_tP3": 0,
+    "heater_status_tP4": 0,
+    "heater_status_flow": 0,
+    "heater_status_flowMax": 0.0025,
+    "heater_status_valvePos": 34,
+    "heater_status_valveFlags": 0,
+    "heater_status_power": 0,
+    "heater_status_powerMax": 14,
+    "heater_status_power100": 0,
+    "heater_status_fillingLeft": 0,
+    "heater_status_flags": 1,
+    "heater_status_sysFlags": 0,
+    "heater_status_error": "OK"
+}
+
 SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL = {}
 
 def helper_create_instance_without_host():
@@ -132,18 +164,6 @@ class TestClageHomeserver(TestCase):
     def test_setChargingActiveColor(self, mock_get):
         response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setChargingActiveColor(0x808080)
         mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=cch=8421504')
-        self.assertIsNotNone(response)
-
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setChargingFinishedColor(self, mock_get):
-        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setChargingFinishedColor(0x808080)
-        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=cfi=8421504')
-        self.assertIsNotNone(response)
-
-    @mock.patch('requests.get', side_effect=mocked_request_status)
-    def test_setLedBrightness(self, mock_get):
-        response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setLedBrightness(100)
-        mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=lbr=100')
         self.assertIsNotNone(response)
 
     @mock.patch('requests.get', side_effect=mocked_request_status)

@@ -116,10 +116,10 @@ class ClageHomeServer:
 
     ERROR = {
         0: 'OK',
-        1: '?',
-        3: '?',
-        8: '?',
-        10: '?'
+        1: 'Known, but not documented',
+        3: 'Known, but not documented',
+        8: 'Known, but not documented',
+        10: 'Known, but not documented'
     }
 
     def __queryStatusApi(self):
