@@ -1,3 +1,5 @@
+[![Python application](https://github.com/klacol/clage_homerserver/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/klacol/clage_homerserver/actions/workflows/pythonapp.yml)
+
 # clage_homeserver (WIP)
 Python client for accessing the Clage Waterheater via the local https-Rest-API-Endpoint of the clage Homeserver
 
