@@ -13,7 +13,7 @@ This is the first version of the API so there are still breaking chnages possibl
 # Links
 [Product Homepage](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)
 
-[Openapi Document](ttps://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
+[Openapi Document](https://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
 
 [Project Homepage](https://github.com/klacol/clage_homeserver)
 
@@ -33,9 +33,10 @@ pip install clage_homeserver
 
 ```python
 from clage_homeserver import ClageHomeServer
-clageHomeServer = ClageHomeServer('192.168.0.78','Your Homeserver ID','Your Heater ID') # <- change to your charger IP, and lookup the ID's in the Clage App
+clageHomeServer = ClageHomeServer('192.168.0.78','Your Homeserver ID','Your Heater ID') 
  
 print (clageHomeServer.requestStatus())
 
+# Set temperature to 45.6 °C
 clageHomeServer.setTemperature(456)
 ```
