@@ -22,7 +22,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clage_homeserver",
-    version="0.0.6",
+    version="0.0.7",
     author="Klaus Aengenvoort",
     description="A Python API for accessing an electrical Clage Waterheater via the Clage Homeserver REST API",
     long_description=long_description_readme,
