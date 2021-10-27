@@ -1,5 +1,7 @@
 name: Publish Python 🐍 module to TestPyPI
-on: push
+on:
+  push:
+    branches: [ main ]
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 module to TestPyPI
