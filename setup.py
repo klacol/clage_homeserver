@@ -1,5 +1,21 @@
 import setuptools
 
+# Build: 
+# py -m build
+
+# Upload to https://test.pypi.org: 
+# py -m twine upload --repository testpypi dist/*
+
+# Install from https://test.pypi.org: 
+# py -m pip install --index-url https://test.pypi.org/simple/ --no-deps clage-homeserver
+
+# Test:
+#   py
+#   from clage_homeserver import ClageHomeServer
+#   clageHomeServer = ClageHomeServer('192.168.0.78','Your Homeserver ID','Your Heater ID') 
+#   print (clageHomeServer.requestStatus())
+
+
 # Read content of README.md as the project description
 with open("README.md", "r") as fh:
     long_description_readme = fh.read()
@@ -8,11 +24,10 @@ setuptools.setup(
     name="clage_homeserver",
     version="0.0.6",
     author="Klaus Aengenvoort",
-    author_email="klaus.aengenvoort@gmail.com",
     description="A Python API for accessing an electrical Clage Waterheater via the Clage Homeserver REST API",
     long_description=long_description_readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/klacol/clage_homeserver-api",
+    url="https://github.com/klacol/clage_homeserver",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
