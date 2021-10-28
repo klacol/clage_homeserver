@@ -6,8 +6,14 @@ import setuptools
 # Upload to https://test.pypi.org: 
 # py -m twine upload --repository testpypi dist/*
 
+# Upload to https://pypi.org: 
+# py -m twine upload --repository pypi dist/*
+
 # Install from https://test.pypi.org: 
 # py -m pip install --index-url https://test.pypi.org/simple/ --no-deps clage-homeserver
+
+# Install from https://pypi.org: 
+# py -m pip install clage-homeserver
 
 # Test:
 #   py
@@ -22,7 +28,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clage_homeserver",
-    version="0.0.7",
+    version="0.0.8",
     author="Klaus Aengenvoort",
     description="A Python API for accessing an electrical Clage Waterheater via the Clage Homeserver REST API",
     long_description=long_description_readme,
