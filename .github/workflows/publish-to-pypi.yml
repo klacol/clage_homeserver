@@ -1,7 +1,7 @@
-name: Publish Python 🐍 module to https://pypi.org
+name: Publish Release of to https://pypi.org/project/clage-homeserver
 on:
-  push:
-    branches: [ main ]
+  release:
+    types: [created]
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 module to TestPyPI
