@@ -40,16 +40,16 @@ class ClageHomeServerStatusMapper:
         heater_status_setpoint = float(heater_status.get('setpoint'))/10          # 600 => 60 °C
         heater_status_tIn = float(heater_status.get('tIn'))/10                    # 274 => 27.4 °C
         heater_status_tOut = float(heater_status.get('tOut'))/10                  # 244 => 24.4 °C
-        heater_status_tP1 = float(heater_status.get('tP1'))/10                    # 0
-        heater_status_tP2 = float(heater_status.get('tP2'))/10                    # 0
-        heater_status_tP3 = float(heater_status.get('tP3'))/10                    # 0
-        heater_status_tP4 = float(heater_status.get('tP4'))/10                    # 0
-        heater_status_flow = float(heater_status.get('flow'))                     # 0
-        heater_status_flowMax = float(heater_status.get('flowMax'))/100/1000      # 254 => 2.54 Liter => 0.00254 m³
-        heater_status_valvePos = int(heater_status.get('valvePos'))               # 71 = 71 %
+        heater_status_tP1 = float(heater_status.get('tP1'))/10                    # 0 Temperaturspeicher 1
+        heater_status_tP2 = float(heater_status.get('tP2'))/10                    # 0 Temperaturspeicher 2
+        heater_status_tP3 = float(heater_status.get('tP3'))/10                    # 0 Temperaturspeicher 3
+        heater_status_tP4 = float(heater_status.get('tP4'))/10                    # 0 Temperaturspeicher 4
+        heater_status_flow = float(heater_status.get('flow'))/10                  # 0 Wasserfluss in Liter/Minute
+        heater_status_flowMax = float(heater_status.get('flowMax'))               # Durchflussmengenbegrenzung (0=AUS, 253=ECO, 254=AUTO)
+        heater_status_valvePos = int(heater_status.get('valvePos'))               # Stellung des Motorventils: 71 = 71 % offen
         heater_status_valveFlags = int(heater_status.get('valveFlags'))           # 0
-        heater_status_power = float(heater_status.get('power'))                   # 0
-        heater_status_powerMax = float(heater_status.get('powerMax'))/10          # 140 => 14 kW
+        heater_status_power = float(heater_status.get('power'))/1000              # 1972 Watt = 1,972 kW  Leistungsaufnahme
+        heater_status_powerMax = float(heater_status.get('powerMax'))             # Höchstwert der Leistungsaufnahme: 140 => 21 kW, siehe Kapitel 4.9 in der API-Dokumentation
         heater_status_power100 = float(heater_status.get('power100'))             # 0
         heater_status_fillingLeft = int(heater_status.get('fillingLeft'))         # 0
         heater_status_flags = int(heater_status.get('flags'))                     # 1
@@ -126,20 +126,21 @@ class ClageHomeServer:
         try:
             urllib3.disable_warnings()
             
-            # Use HTTP Long Polling (lp); see API docs
+            # use http long polling (lp); see api docs
+            # How to user this ansync in a Home Assistant component??
             # rev=1; 
             # while (1): 
-            #     url = "https://"+self.ipAddress+"/devices?lp="+str(rev)+"&showBusId=1&showErrors=1&showLogs=1&showTotal=1"   
-            #     long_polling_timeout = 35 # greater than 30 Seconds; after 30 Seconds the server terminated the long polling request automatically
-            #     statusRequest = requests.get(url, auth=(self.username, self.password), timeout=long_polling_timeout, verify=False)
-            #     status_resonse_json = statusRequest.json() 
+            #     url = "https://"+self.ipAddress+"/devices?lp="+str(rev)+"&showbusid=1&showerrors=1&showlogs=1&showtotal=1"   
+            #     long_polling_timeout = 35 # greater than 30 seconds; after 30 seconds the server terminated the long polling request automatically
+            #     statusrequest = requests.get(url, auth=(self.username, self.password), timeout=long_polling_timeout, verify=False)
+            #     status_resonse_json = statusrequest.json() 
             #     rev_old=rev
             #     rev=status_resonse_json['rev']
             #     temperature = status_resonse_json['devices'][0]['info']['setpoint']
             #     if (rev != rev_old):
-            #       print(str(datetime.today()) + ' - changed: setpoint = '+str(int(temperature)/10) + ' °C')
+            #       print(str(datetime.today()) + ' - changed: setpoint = '+str(int(temperature)/10) + ' °c')
             #     else:
-            #       print(str(datetime.today()) + ' - unchanged: setpoint = '+str(int(temperature)/10) + ' °C')   
+            #       print(str(datetime.today()) + ' - unchanged: setpoint = '+str(int(temperature)/10) + ' °c')   
             
 
             url = "https://"+self.ipAddress+"/devices/status/"+self.heaterId
@@ -166,13 +167,3 @@ class ClageHomeServer:
             response = ClageHomeServerStatusMapper().mapApiStatusResponse({})
         return response
 
-######################################################################################
-# from clage_homeserver import ClageHomeserver
-# clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7') # <- change to your charger IP, your homeServerId and your heaterId
-# response = clageHomeServer.requestStatus()
-#
-# clageHomeServer.setTemperature(44)
-#
-# print(response)
-#
-######################################################################################
