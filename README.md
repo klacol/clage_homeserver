@@ -11,13 +11,15 @@ Based on the [API documentation version 1.3.4](https://github.com/klacol/clage-h
 This is the first version of the API so there are still breaking chnages possible eg. output parameter names or values.
 
 # Links
-[Product Homepage](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)
-
-[Openapi Document](https://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
-
 [Project Homepage](https://github.com/klacol/clage_homeserver)
 
 [PyPi Package](https://pypi.org/project/clage_homeserver)
+
+[Openapi Document](https://app.swaggerhub.com/apis/klacol/ClageHomeServer/1.0.0) 
+
+[Product Homepage](https://www.clage.de/de/produkte/e-komfortdurchlauferhitzer/DSX-Touch)
+
+All rights of CLAGE GmbH remain unaffected.
 
 # Features
 - Query Heater Status
