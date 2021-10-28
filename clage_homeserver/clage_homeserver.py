@@ -45,7 +45,13 @@ class ClageHomeServerStatusMapper:
         heater_status_tP3 = float(heater_status.get('tP3'))/10                    # 0 Temperaturspeicher 3
         heater_status_tP4 = float(heater_status.get('tP4'))/10                    # 0 Temperaturspeicher 4
         heater_status_flow = float(heater_status.get('flow'))/10                  # 0 Wasserfluss in Liter/Minute
-        heater_status_flowMax = ClageHomeServer.FLOWMAX.get(status.get('flowMax')) or 'unknown'          # Durchflussmengenbegrenzung (0=AUS, 253=ECO, 254=AUTO)
+
+        heater_status_flowMax_float = float(heater_status.get('flowMax'))    
+        if (heater_status_flowMax_float == 0 or heater_status_flowMax_float == 253 or heater_status_flowMax_float == 254):
+            heater_status_flowMax = ClageHomeServer.FLOWMAX.get(heater_status.get('flowMax')) or 'unknown'  # Durchflussmengenbegrenzung (0=AUS, 253=ECO, 254=AUTO)
+        else: 
+            heater_status_flowMax = heater_status_flowMax_float/10                                          # 250 Maximaler Wasserfluss in Liter/Minute
+              
         heater_status_valvePos = int(heater_status.get('valvePos'))               # Stellung des Motorventils: 71 = 71 % offen
         heater_status_valveFlags = int(heater_status.get('valveFlags'))           # 0
         heater_status_power = float(heater_status.get('power'))/1000              # 1972 Watt = 1,972 kW  Leistungsaufnahme

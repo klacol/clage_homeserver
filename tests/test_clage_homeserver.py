@@ -66,7 +66,7 @@ SAMPLE_REQUEST_STATUS_RESPONSE = {
     "heater_status_tP3": 0.0,
     "heater_status_tP4": 0.0,
     "heater_status_flow": 0.0,
-    "heater_status_flowMax": 250.0,
+    "heater_status_flowMax": 25.0,
     "heater_status_valvePos": 34,
     "heater_status_valveFlags": 0,
     "heater_status_power": 0.0,
