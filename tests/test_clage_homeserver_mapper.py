@@ -4,7 +4,7 @@ from unittest import (TestCase, mock)
 from functools import partial, reduce
 get_value_from_dict = partial(reduce, lambda d, k: d[k])
 
-from clage_homeserver import ClageHomeServerStatusMapper
+from clage_homeserver import ClageHomeServerMapper
 
 SAMPLE_API_STATUS_RESPONSE = {
     "version": "1.4",
@@ -48,7 +48,7 @@ SAMPLE_API_STATUS_RESPONSE = {
 
 SAMPLE_REQUEST_STATUS_RESPONSE = {}
 
-class TestClageHomeServerStatusMapper(TestCase):
+class TestClageHomeServerMapper(TestCase):
 
     def __nested_set(self, dic, keys, value):
         for key in keys[:-1]:
@@ -61,7 +61,7 @@ class TestClageHomeServerStatusMapper(TestCase):
     def __helper_get_mapped_key(self, keys, value):
         apiResponse = dict(SAMPLE_API_STATUS_RESPONSE)
         self.__nested_set(apiResponse,keys,value)
-        return ClageHomeServerStatusMapper().mapApiStatusResponse(apiResponse)
+        return ClageHomeServerMapper().mapApiStatusResponse(apiResponse)
 
     def test_map_homeserver_version(self):
         self.assertEqual(self.__helper_get_mapped_key(['version'], '1.4').get('homeserver_version'),'1.4')
