@@ -1,7 +1,7 @@
 from unittest import (TestCase, mock)
 TestCase.maxDiff = None
 from clage_homeserver import (ClageHomeServer)
-from clage_homeserver.clage_homeserver import (ClageHomeServerStatusMapper)
+from clage_homeserver.clage_homeserver import (ClageHomeServerMapper)
 import requests
 
 
