@@ -61,7 +61,7 @@ class TestClageHomeServerMapper(TestCase):
     def __helper_get_mapped_key(self, keys, value):
         apiResponse = dict(SAMPLE_API_STATUS_RESPONSE)
         self.__nested_set(apiResponse,keys,value)
-        return ClageHomeServerStatusMapper().mapApiStatusResponse(apiResponse)
+        return ClageHomeServerMapper().mapApiStatusResponse(apiResponse)
 
     def test_map_homeserver_version(self):
         self.assertEqual(self.__helper_get_mapped_key(['version'], '1.4').get('homeserver_version'),'1.4')
