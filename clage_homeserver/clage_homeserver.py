@@ -319,7 +319,7 @@ class ClageHomeServer:
             heater = logs.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
             heater_logs = heater.get('logs')
             
-            numer_of_watertaps = 0
+            number_of_watertaps = 0
             usage_time = 0
             consumption_energy = 0
             consumption_water = 0
@@ -332,13 +332,13 @@ class ClageHomeServer:
                 heater_setup_power = int(log.get('power'))/1000              # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh
                 heater_setup_water = int(log.get('water'))/100               # water	uint32_t	1/100 l	0,42 l	genutzte Wassermenge in Liter
                 heater_setup_cid = int(log.get('cid'))                       # cid	int32_t		2	"kundenspez. ID, die beim Zapfvorgang gesetzt war (über „PUT /devices/setpoint/{id}“)"
-                numer_of_watertaps += 1   
+                number_of_watertaps += 1   
                 usage_time += heater_setup_length                 
                 consumption_energy += heater_setup_power
                 consumption_water += heater_setup_water
 
             return ({
-            'numer_of_watertaps': numer_of_watertaps, 
+            'number_of_watertaps': number_of_watertaps, 
             'usage_time': usage_time,
             'consumption_energy': consumption_energy,
             'consumption_water': consumption_water,
