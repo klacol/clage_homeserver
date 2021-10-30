@@ -319,10 +319,10 @@ class ClageHomeServer:
             heater = logs.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
             heater_logs = heater.get('logs')
             
-            count_watertaps = 0
-            sum_length = 0
-            sum_power = 0
-            sum_water = 0
+            numer_of_watertaps = 0
+            usage_time = 0
+            consumption_energy = 0
+            consumption_water = 0
 
             for log in heater_logs:
                 heater_setup_id = int(log.get('id'))                         # id	uint32_t		1	eindeutiger Datensatzindex
@@ -332,16 +332,16 @@ class ClageHomeServer:
                 heater_setup_power = int(log.get('power'))/1000              # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh
                 heater_setup_water = int(log.get('water'))/100               # water	uint32_t	1/100 l	0,42 l	genutzte Wassermenge in Liter
                 heater_setup_cid = int(log.get('cid'))                       # cid	int32_t		2	"kundenspez. ID, die beim Zapfvorgang gesetzt war (über „PUT /devices/setpoint/{id}“)"
-                count_watertaps += 1   
-                sum_length += heater_setup_length                 
-                sum_power += heater_setup_power
-                sum_water += heater_setup_water
+                numer_of_watertaps += 1   
+                usage_time += heater_setup_length                 
+                consumption_energy += heater_setup_power
+                consumption_water += heater_setup_water
 
             return ({
-            'count_watertaps': count_watertaps, 
-            'sum_length': sum_length,
-            'sum_power': sum_power,
-            'sum_water': sum_water,
+            'numer_of_watertaps': numer_of_watertaps, 
+            'usage_time': usage_time,
+            'consumption_energy': consumption_energy,
+            'consumption_water': consumption_water,
             })
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
