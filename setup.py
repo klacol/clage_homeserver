@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="clage_homeserver",
-    version="0.1.1",
+    version="0.1.2",
     author="Klaus Aengenvoort",
     description="A Python API for accessing and managing an electrical Clage Waterheater (e.g. DSX Touch) via the Clage Homeserver REST API",
     long_description=long_description_readme,
