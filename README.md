@@ -22,8 +22,10 @@ This is the first version of the API so there are still breaking chnages possibl
 All rights of CLAGE GmbH remain unaffected.
 
 # Features
-- Query Heater Status
-- Set Heater Temperature
+- Query the status of the homeserver & water heater
+- Query the setup values of the homeserver & water heater
+- Query the consumption values for water (Liter) and energy (kWh)
+- Set the setpoint temperature for the heater
 
 # Install
 
@@ -37,8 +39,15 @@ pip install clage_homeserver
 from clage_homeserver import ClageHomeServer
 clageHomeServer = ClageHomeServer('192.168.0.78','Your Homeserver ID','Your Heater ID') 
  
+ # Request the status of the homeserver/heater
 print (clageHomeServer.requestStatus())
 
-# Set temperature to 45.6 °C
-clageHomeServer.setTemperature(456)
+ # Request the setup values of the homeserver/heater
+print (clageHomeServer.requestSetup())
+
+ # Request the consupmtion values of the homeserver/heater
+print (clageHomeServer.GetConsumption())
+
+# Set the temperature to 45.6 °C (setpoint)
+clageHomeServer.setTemperature(45.6)
 ```
