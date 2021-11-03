@@ -103,7 +103,7 @@ class ClageHomeServerMapper:
         heater_setup_swVersion = heater_setup.get('swVersion')                                    # String, z.B. 1.4.1,	Version der Gerätesoftware
         heater_setup_serialDevice = heater_setup.get('serialDevice')                              # String, Seriennummer des Gerätes
         heater_setup_serialPowerUnit = heater_setup.get('serialPowerUnit')                        # String, Seriennummer des Leistungsteils
-        heater_setup_flowMax = float(heater_setup.get('flowMax'))/10                              # uint8_t, 1/10, l/min", 254, "Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO"
+        heater_setup_flowMax = float(heater_setup.get('flowMax'))/10                              # uint8_t, 1/10, l/min => m³/h", 254, "Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO"
         heater_setup_loadShedding = float(heater_setup.get('loadShedding')),                      # uint8_t, 0, Lastabwurf; 0=aus
         heater_setup_scaldProtection = float(heater_setup.get('scaldProtection'))                 # uint16_t, 1/10, °C, 420, Verbrühschutztemperatur; 0=aus; entspr. tLimit
         heater_setup_sound = heater_setup.get('sound')                                            # uint8_t, 0, Signalton; 0=aus
@@ -112,7 +112,7 @@ class ClageHomeServerMapper:
         heater_setup_powerMax = float(heater_setup.get('powerMax'))                               # uint8_t, 140, Höchstwert der Leistungsaufnahme
         heater_setup_calValue = float(heater_setup.get('calValue'))                               # Integer, 2800, interner Kontrollwert
         heater_setup_timerPowerOn = float(heater_setup.get('timerPowerOn'))                       # uint32_t, s, 300,	Heizdauer
-        heater_setup_timerLifetime = float(heater_setup.get('timerLifetime'))                     # uint32_t,	s,	172800,	Gesamtbetriebsdauer
+        heater_setup_timerLifetime = float(heater_setup.get('timerLifetime'))/60/60               # uint32_t,	s=>h,	172800,	Gesamtbetriebsdauer
         heater_setup_timerStandby = float(heater_setup.get('timerStandby'))                       # uint32_t,	s, 2400, Betriebsdauer seit dem letzten Stromausfall
         heater_setup_totalPowerConsumption = float(heater_setup.get('totalPowerConsumption'))     # uint16_t,	kWh, 0, Gesamtleistungsaufnahme
         heater_setup_totalWaterConsumption = float(heater_setup.get('totalWaterConsumption'))     # uint16_t,	Liter, 0, Gesamtwassermenge
