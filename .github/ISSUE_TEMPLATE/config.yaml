@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a bug for the module
+    url: https://github.com/klacol/issues
+    about: "This is the issue tracker for the module. Please report issues with the HOME Assistant integration in the repository https://github.com/klacol/homeassistant-clage_homeserver"
+  - name: I have a question or need support
+    url: https://github.com/klacol/clage_homeserver/discussions
+    about: We use GitHub issues just for tracking bugs, check out the discussions for all other questions and requests
