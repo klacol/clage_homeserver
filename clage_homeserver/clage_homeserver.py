@@ -114,8 +114,8 @@ class ClageHomeServerMapper:
         heater_setup_timerPowerOn = float(heater_setup.get('timerPowerOn'))                       # uint32_t, s, 300,	Heizdauer
         heater_setup_timerLifetime = float(heater_setup.get('timerLifetime'))/60/60               # uint32_t,	s=>h,	172800,	Gesamtbetriebsdauer
         heater_setup_timerStandby = float(heater_setup.get('timerStandby'))                       # uint32_t,	s, 2400, Betriebsdauer seit dem letzten Stromausfall
-        heater_setup_totalPowerConsumption = float(heater_setup.get('totalPowerConsumption'))     # uint16_t,	kWh, 0, Gesamtleistungsaufnahme
-        heater_setup_totalWaterConsumption = float(heater_setup.get('totalWaterConsumption'))     # uint16_t,	Liter, 0, Gesamtwassermenge
+        #heater_setup_totalPowerConsumption = round(float(heater_setup.get('totalPowerConsumption')),1)     # uint16_t,	kWh, 0, Gesamtenergie
+        #heater_setup_totalWaterConsumption = round(float(heater_setup.get('totalWaterConsumption')),0)     # uint16_t,	Liter, 0, Gesamtwassermenge
 
         return ({
             'heater_setup_swVersion': heater_setup_swVersion, 
@@ -132,8 +132,6 @@ class ClageHomeServerMapper:
             'heater_setup_timerPowerOn': heater_setup_timerPowerOn,
             'heater_setup_timerLifetime': heater_setup_timerLifetime,
             'heater_setup_timerStandby': heater_setup_timerStandby,
-            'heater_setup_totalPowerConsumption': heater_setup_totalPowerConsumption,
-            'heater_setup_totalWaterConsumption': heater_setup_totalWaterConsumption,
         })
 
     def mapApiLogsResponse(self, logs):
@@ -329,12 +327,12 @@ class ClageHomeServer:
                 posixTimestamp = int(log['time'])                            # see https://www.epochconverter.com/
                 heater_setup_time = str(datetime.utcfromtimestamp(posixTimestamp))      # time	uint64_t	Unixtime	1355266800	Endzeit der Zapfung in UTC
                 heater_setup_length = int(log.get('length'))                 # length	uint32_t	s	10 s	Dauer des Zapfvorgangs in s
-                heater_setup_power = int(log.get('power'))/1000              # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh
-                heater_setup_water = int(log.get('water'))/100               # water	uint32_t	1/100 l	0,42 l	genutzte Wassermenge in Liter
+                heater_setup_energy = round(int(log.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh, it is energy(kWh) not power (kW)
+                heater_setup_water = round(int(log.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Genutzte Wassermenge in Liter
                 heater_setup_cid = int(log.get('cid'))                       # cid	int32_t		2	"kundenspez. ID, die beim Zapfvorgang gesetzt war (über „PUT /devices/setpoint/{id}“)"
                 number_of_watertaps += 1   
                 usage_time += heater_setup_length                 
-                consumption_energy += heater_setup_power
+                consumption_energy += heater_setup_energy
                 consumption_water += heater_setup_water
 
             return ({
