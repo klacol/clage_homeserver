@@ -51,14 +51,16 @@ class ClageHomeServerMapper:
         else: 
             heater_status_flowMax = heater_status_flowMax_float/10                                          # 250 Maximaler Wasserfluss in Liter/Minute
               
-        heater_status_valvePos = int(heater_status.get('valvePos'))               # Stellung des Motorventils: 71 = 71 % offen
-        heater_status_valveFlags = int(heater_status.get('valveFlags'))           # 0
-        heater_status_power = float(heater_status.get('power'))/1000              # 1972 Watt = 1,972 kW  Leistungsaufnahme
-        heater_status_powerMax = float(heater_status.get('powerMax'))             # Höchstwert der Leistungsaufnahme: 140 => 21 kW, siehe Kapitel 4.9 in der API-Dokumentation
-        heater_status_power100 = float(heater_status.get('power100'))             # 0
-        heater_status_fillingLeft = int(heater_status.get('fillingLeft'))         # 0
-        heater_status_flags = int(heater_status.get('flags'))                     # 1
-        heater_status_sysFlags = int(heater_status.get('sysFlags'))               # 0
+        heater_status_valvePos = int(heater_status.get('valvePos'))                # Stellung des Motorventils: 71 = 71 % offen
+        heater_status_valveFlags = int(heater_status.get('valveFlags'))            # 0
+        heater_status_powerMax = float(heater_status.get('powerMax')) 
+        device_power = ClageHomeServer.POWERMAX_DSX.get(heater_status_powerMax)    # Geräteleistung in Watt, 140 => 21 kW, siehe Kapitel 4.9 in der API-Dokumentation
+        power_factor = device_power / heater_status_powerMax                       # Powerfaktor, siehe Kapitel 4.9 in der API-Dokumentation
+        heater_status_power = float(heater_status.get('power'))*power_factor/1000  # Aktuelle Leistungsaufnahme in kW, siehe Kapitel 4.9 in der API-Dokumentation
+        heater_status_power100 = float(heater_status.get('power100'))              # unbekannt
+        heater_status_fillingLeft = int(heater_status.get('fillingLeft'))          # 0
+        heater_status_flags = int(heater_status.get('flags'))                      # 1
+        heater_status_sysFlags = int(heater_status.get('sysFlags'))                # 0
         heater_status_error = ClageHomeServer.ERROR.get(heater_status.get('error')) or 'unknown'  # OK
 
         return ({
@@ -185,6 +187,12 @@ class ClageHomeServer:
         3: 'Known, but not documented',
         8: 'Known, but not documented',
         10: 'Known, but not documented'
+    }
+
+    POWERMAX_DSX = {
+        120: 18000,
+        140: 21000,
+        160: 2400
     }
 
     FLOWMAX = {
