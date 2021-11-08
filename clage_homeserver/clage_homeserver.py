@@ -111,8 +111,8 @@ class ClageHomeServerMapper:
         heater_setup_powerCosts = float(heater_setup.get('powerCosts'))                           # uint8_t, 25, Kosten pro kWh (Cent)
         heater_setup_powerMax = float(heater_setup.get('powerMax'))                               # uint8_t, 140, Höchstwert der Leistungsaufnahme
         heater_setup_calValue = float(heater_setup.get('calValue'))                               # Integer, 2800, interner Kontrollwert
-        heater_setup_timerPowerOn = float(heater_setup.get('timerPowerOn'))                       # uint32_t, s, 300,	Heizdauer
-        heater_setup_timerLifetime = float(heater_setup.get('timerLifetime'))/60/60               # uint32_t,	s=>h,	172800,	Gesamtbetriebsdauer
+        heater_setup_timerPowerOn = float(heater_setup.get('timerPowerOn'))/60                    # uint32_t, s=>min, 300,	Heizdauer
+        heater_setup_timerLifetime = round(float(heater_setup.get('timerLifetime'))/60/60,0)      # uint32_t,	s=>h,	172800,	Gesamtbetriebsdauer
         heater_setup_timerStandby = float(heater_setup.get('timerStandby'))                       # uint32_t,	s, 2400, Betriebsdauer seit dem letzten Stromausfall
         #heater_setup_totalPowerConsumption = round(float(heater_setup.get('totalPowerConsumption')),1)     # uint16_t,	kWh, 0, Gesamtenergie
         #heater_setup_totalWaterConsumption = round(float(heater_setup.get('totalWaterConsumption')),0)     # uint16_t,	Liter, 0, Gesamtwassermenge
@@ -336,10 +336,10 @@ class ClageHomeServer:
                 consumption_water += heater_setup_water
 
             return ({
-            'number_of_watertaps': number_of_watertaps, 
-            'usage_time': usage_time,
-            'consumption_energy': consumption_energy,
-            'consumption_water': consumption_water,
+            'number_of_watertaps': number_of_watertaps,                      # Anzahl der Zapfungen
+            'usage_time': round(usage_time/60,0),                            # Gesamt-Nutzungsdauer in Minuten
+            'consumption_energy': round(consumption_energy,0),               # Gesamtenergie in kWh
+            'consumption_water': round(consumption_water,0),                 # Gesamtenergie in Liter
             })
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
