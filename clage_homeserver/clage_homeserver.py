@@ -107,7 +107,7 @@ class ClageHomeServerMapper:
         heater_setup_serialPowerUnit = heater_setup.get('serialPowerUnit')                        # String, Seriennummer des Leistungsteils
         heater_setup_flowMax = float(heater_setup.get('flowMax'))/10                              # uint8_t, 1/10, l/min => m³/h", 254, "Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO"
         heater_setup_loadShedding = float(heater_setup.get('loadShedding')),                      # uint8_t, 0, Lastabwurf; 0=aus
-        heater_setup_scaldProtection = float(heater_setup.get('scaldProtection'))                 # uint16_t, 1/10, °C, 420, Verbrühschutztemperatur; 0=aus; entspr. tLimit
+        heater_setup_scaldProtection = float(heater_setup.get('scaldProtection'))/10              # uint16_t, 1/10, °C, 420, Verbrühschutztemperatur; 0=aus; entspr. tLimit
         heater_setup_sound = heater_setup.get('sound')                                            # uint8_t, 0, Signalton; 0=aus
         heater_setup_fcpAddr = heater_setup.get('fcpAddr')                                        # uint8_t, dez.	80,	Adresse
         heater_setup_powerCosts = float(heater_setup.get('powerCosts'))                           # uint8_t, 25, Kosten pro kWh (Cent)
