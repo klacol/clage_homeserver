@@ -331,14 +331,14 @@ class ClageHomeServer:
             consumption_water = 0
 
             usage_time = int(heater_logs.get('length'))                         # length	uint32_t	s	10 s	Duration of the tapping process in s
-            consumption_energy = round(int(heater_logs.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
-            consumption_water = round(int(heater_logs.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters
+            consumption_energy = round(int(heater_logs.get('power'))/1000,2)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
+            consumption_water = round(int(heater_logs.get('water'))/100,1)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters
 
             return ({
             'number_of_watertaps': number_of_watertaps,                      # Number of taps, not supported in the totals request
             'usage_time': round(usage_time/60,0),                            # Total usage time in minutes
-            'consumption_energy': round(consumption_energy,0),               # Total energy in kWh
-            'consumption_water': round(consumption_water,0),                 # Total water volume in liters
+            'consumption_energy': consumption_energy,                        # Total energy in kWh
+            'consumption_water': consumption_water                           # Total water volume in liters
             })
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
