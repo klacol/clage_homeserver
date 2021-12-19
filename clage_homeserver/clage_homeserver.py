@@ -107,7 +107,7 @@ class ClageHomeServerMapper:
         heater_setup_serialPowerUnit = heater_setup.get('serialPowerUnit')                        # String, Seriennummer des Leistungsteils
         heater_setup_flowMax = float(heater_setup.get('flowMax'))/10                              # uint8_t, 1/10, l/min => m³/h", 254, "Durchflussmengenbegrenzung 0/255=aus, 253=ECO,254=AUTO"
         heater_setup_loadShedding = float(heater_setup.get('loadShedding')),                      # uint8_t, 0, Lastabwurf; 0=aus
-        heater_setup_scaldProtection = float(heater_setup.get('scaldProtection'))/10              # uint16_t, 1/10, °C, 420, Verbrühschutztemperatur; 0=aus; entspr. tLimit
+        heater_setup_scaldProtection = round(float(heater_setup.get('scaldProtection'))/10,1)     # uint16_t, 1/10, °C, 420, Verbrühschutztemperatur; 0=aus; entspr. tLimit
         heater_setup_sound = heater_setup.get('sound')                                            # uint8_t, 0, Signalton; 0=aus
         heater_setup_fcpAddr = heater_setup.get('fcpAddr')                                        # uint8_t, dez.	80,	Adresse
         heater_setup_powerCosts = float(heater_setup.get('powerCosts'))                           # uint8_t, 25, Kosten pro kWh (Cent)
@@ -314,7 +314,36 @@ class ClageHomeServer:
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
 
-    def GetConsumption(self):
+    def GetConsumptionTotals(self):
+        urllib3.disable_warnings()
+        response = {}
+        try:
+            url = "https://"+self.ipAddress+"/devices/logs?showTotal=true"
+            totalsRequest = requests.get(url, auth=(self.username, self.password), timeout=5, verify=False)
+            totals = totalsRequest.json()
+
+            heater = totals.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+            heater_logs = heater.get('logs')[0]
+            
+            number_of_watertaps = 0
+            usage_time = 0
+            consumption_energy = 0
+            consumption_water = 0
+
+            usage_time = int(heater_logs.get('length'))                         # length	uint32_t	s	10 s	Duration of the tapping process in s
+            consumption_energy = round(int(heater_logs.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
+            consumption_water = round(int(heater_logs.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters
+
+            return ({
+            'number_of_watertaps': number_of_watertaps,                      # Number of taps, not supported in the totals request
+            'usage_time': round(usage_time/60,0),                            # Total usage time in minutes
+            'consumption_energy': round(consumption_energy,0),               # Total energy in kWh
+            'consumption_water': round(consumption_water,0),                 # Total water volume in liters
+            })
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+            return {}
+
+    def GetConsumptionFromLog(self):
         urllib3.disable_warnings()
         response = {}
         try:
@@ -331,23 +360,23 @@ class ClageHomeServer:
             consumption_water = 0
 
             for log in heater_logs:
-                heater_setup_id = int(log.get('id'))                         # id	uint32_t		1	eindeutiger Datensatzindex
+                heater_setup_id = int(log.get('id'))                         # id	uint32_t		1	unique record index
                 posixTimestamp = int(log['time'])                            # see https://www.epochconverter.com/
-                heater_setup_time = str(datetime.utcfromtimestamp(posixTimestamp))      # time	uint64_t	Unixtime	1355266800	Endzeit der Zapfung in UTC
-                heater_setup_length = int(log.get('length'))                 # length	uint32_t	s	10 s	Dauer des Zapfvorgangs in s
-                heater_setup_energy = round(int(log.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh, it is energy(kWh) not power (kW)
-                heater_setup_water = round(int(log.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Genutzte Wassermenge in Liter
-                heater_setup_cid = int(log.get('cid'))                       # cid	int32_t		2	"kundenspez. ID, die beim Zapfvorgang gesetzt war (über „PUT /devices/setpoint/{id}“)"
+                heater_setup_time = str(datetime.utcfromtimestamp(posixTimestamp))      # time	uint64_t	Unixtime	1355266800	End time of tapping in UTC
+                heater_setup_length = int(log.get('length'))                 # length	uint32_t	s	10 s	Duration of the tapping process in s
+                heater_setup_energy = round(int(log.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
+                heater_setup_water = round(int(log.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters
+                heater_setup_cid = int(log.get('cid'))                       # cid	int32_t		2	"customer specific ID, which was set during the tapping process (über „PUT /devices/setpoint/{id}“)"
                 number_of_watertaps += 1   
                 usage_time += heater_setup_length                 
                 consumption_energy += heater_setup_energy
                 consumption_water += heater_setup_water
 
             return ({
-            'number_of_watertaps': number_of_watertaps,                      # Anzahl der Zapfungen
-            'usage_time': round(usage_time/60,0),                            # Gesamt-Nutzungsdauer in Minuten
-            'consumption_energy': round(consumption_energy,0),               # Gesamtenergie in kWh
-            'consumption_water': round(consumption_water,0),                 # Gesamtenergie in Liter
+            'number_of_watertaps': number_of_watertaps,                      # Number of taps
+            'usage_time': round(usage_time/60,0),                            # Total usage time in minutes
+            'consumption_energy': round(consumption_energy,0),               # Total energy in kWh
+            'consumption_water': round(consumption_water,0),                 # Total water volume in liters
             })
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
@@ -355,7 +384,7 @@ class ClageHomeServer:
     def setTemperature(self, temperature):
         try:
             tempApiValue = str(int(temperature*10))
-            url = "https://"+self.ipAddress+"/devices/setpoint/"+self.heaterId
+            url = f"https://{self.ipAddress}/devices/setpoint/{self.heaterId}"
             body = {'data': tempApiValue, 'cid': '1'}
             setRequest = requests.put(url=url, auth=(self.username, self.password), data=body, timeout=5, verify=False)
             return ClageHomeServerMapper().mapApiStatusResponse(setRequest.json())
