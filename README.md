@@ -46,7 +46,7 @@ print (clageHomeServer.requestStatus())
 print (clageHomeServer.requestSetup())
 
  # Request the consupmtion values of the homeserver/heater
-print (clageHomeServer.GetConsumption())
+print (clageHomeServer.GetConsumptionTotals())
 
 # Set the temperature to 45.6 °C (setpoint)
 clageHomeServer.setTemperature(45.6)
