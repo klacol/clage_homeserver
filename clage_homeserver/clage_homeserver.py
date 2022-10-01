@@ -54,8 +54,8 @@ class ClageHomeServerMapper:
         heater_status_valvePos = int(heater_status.get('valvePos'))                # Stellung des Motorventils: 71 = 71 % offen
         heater_status_valveFlags = int(heater_status.get('valveFlags'))            # 0
         heater_status_powerMax = float(heater_status.get('powerMax')) 
-        device_power = ClageHomeServer.POWERMAX_DSX.get(heater_status_powerMax)    # Geräteleistung in Watt, 140 => 21 kW, siehe Kapitel 4.9 in der API-Dokumentation
-        power_factor = device_power / heater_status_powerMax                       # Powerfaktor, siehe Kapitel 4.9 in der API-Dokumentation
+        device_power = float(ClageHomeServer.POWERMAX_DSX.get(heater_status_powerMax))    # Geräteleistung in Watt, 140 => 21 kW, siehe Kapitel 4.9 in der API-Dokumentation
+        power_factor = float(device_power) / float(heater_status_powerMax)                       # Powerfaktor, siehe Kapitel 4.9 in der API-Dokumentation
         heater_status_power = float(heater_status.get('power'))*power_factor/1000  # Aktuelle Leistungsaufnahme in kW, siehe Kapitel 4.9 in der API-Dokumentation
         heater_status_power100 = float(heater_status.get('power100'))              # unbekannt
         heater_status_fillingLeft = int(heater_status.get('fillingLeft'))          # 0
