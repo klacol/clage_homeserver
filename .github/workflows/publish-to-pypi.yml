@@ -7,7 +7,7 @@ jobs:
     name: Build and publish Python 🐍 module to TestPyPI
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@v3.1.0
+    - uses: actions/checkout@v3.2.0
     - name: Set up Python 3.9
       uses: actions/setup-python@v4.3.1
       with:
