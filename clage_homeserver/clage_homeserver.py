@@ -189,11 +189,11 @@ class ClageHomeServer:
         10: 'Known, but not documented'
     }
 
-    POWERMAX_DSX = {
-        140: 18000,
-        160: 21000,
-        180: 24000,
-        200: 27000
+POWERMAX_DSX = {
+        120: 18000,
+        140: 21000,
+        160: 24000,
+        180: 27000
     }
 
     FLOWMAX = {
