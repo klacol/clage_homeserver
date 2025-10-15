@@ -9,6 +9,8 @@ from datetime import datetime
 import urllib3
 
 NUMBER_OF_CONNECTED_HEATERS = 1       # I have only one heater, so i start with this scenario
+DEFAULTUSER = 'appuser'
+DEFAULTPASSWORD = 'smart'
 
 class ClageHomeServerMapper:
 
@@ -166,10 +168,11 @@ class ClageHomeServer:
     ipAddress = ""
     homeserverId = ""
     heaterId = ""
-    username = "appuser"
-    password = "smart"
+    username = ""
+    password = ""
 
-    def __init__(self, ipAddress, homeserverId, heaterId):
+    def __init__(self, ipAddress, homeserverId, heaterId, password):
+        self.username = DEFAULTUSER
         if (ipAddress is None or ipAddress == ''):
             raise ValueError("ipAddress must be specified")
         self.ipAddress = ipAddress
@@ -179,7 +182,10 @@ class ClageHomeServer:
         if (heaterId is None or heaterId == ''):
             raise ValueError("heaterId must be specified")
         self.heaterId = heaterId
-
+        if (password is None or password == ''):                                                                                                                                                    
+            password = DEFAULTPASSWORD                                                                                                                                                              
+        self.password = password 
+    
     VERSION = {
         '1.4': '1.4'
     }
