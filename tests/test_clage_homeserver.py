@@ -81,16 +81,38 @@ SAMPLE_REQUEST_STATUS_RESPONSE = {
 SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL = {}
 
 def helper_create_instance_without_host():
-    return ClageHomeServer(None,None,None)
+    return ClageHomeServer(None,None,None,'')
 
-def helper_setButtonCurrentValue_ValueError():
-    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setButtonCurrentValue(0,6)
+SAMPLE_API_LOGS_RESPONSE = {
+    "version": "1.4",
+    "error": 0,
+    "time": 1631263211,
+    "success": True,
+    "devices": [
+        {
+            "id": "2049DB0CD7",
+            "logs": [
+                {"id": 1, "time": 1631263000, "length": 120, "power": 3000, "water": 500, "cid": 1},
+                {"id": 2, "time": 1631263200, "length": 60, "power": 1500, "water": 250, "cid": 1}
+            ]
+        }
+    ]
+}
 
-def helper_setAccessType_ValueError():
-    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAccessType(1111)
-
-def helper_setCableLockMode_ValueError():
-    return ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setCableLockMode(1111)
+SAMPLE_API_TOTALS_RESPONSE = {
+    "version": "1.4",
+    "error": 0,
+    "time": 1631263211,
+    "success": True,
+    "devices": [
+        {
+            "id": "2049DB0CD7",
+            "logs": [
+                {"length": 180, "power": 4500, "water": 750}
+            ]
+        }
+    ]
+}
 
 def mocked_request_status(*args, **kwargs):
     class MockResponse:
@@ -101,11 +123,14 @@ def mocked_request_status(*args, **kwargs):
         def json(self):
             return self._response
 
-    if args[0] == 'https://192.168.0.78/devices/status/2049DB0CD7':
+    url = args[0] if args else kwargs.get('url', '')
+    if url == 'https://192.168.0.78/devices/status/2049DB0CD7':
+        return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
+    if url == 'https://192.168.0.78/devices/setpoint/2049DB0CD7':
         return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
     return MockResponse(404, None)
 
-def mocked_temperature_payload(*args, **kwargs):
+def mocked_request_consumption(*args, **kwargs):
     class MockResponse:
         def __init__(self, status_code, response):
             self._response = response
@@ -114,8 +139,10 @@ def mocked_temperature_payload(*args, **kwargs):
         def json(self):
             return self._response
 
-    if args[0] == 'https://192.168.0.78/devices/status/2049DB0CD7':
-        return MockResponse(200, SAMPLE_API_STATUS_RESPONSE)
+    if 'showTotal=true' in args[0]:
+        return MockResponse(200, SAMPLE_API_TOTALS_RESPONSE)
+    if args[0] == 'https://192.168.0.78/devices/logs/2049DB0CD7':
+        return MockResponse(200, SAMPLE_API_LOGS_RESPONSE)
     return MockResponse(404, None)
 
 class TestClageHomeserver(TestCase):
@@ -124,35 +151,39 @@ class TestClageHomeserver(TestCase):
         self.assertRaises(ValueError, helper_create_instance_without_host)
 
     def test_create_with_host(self):
-        self.assertIsNotNone(ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7'))
+        self.assertIsNotNone(ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7',''))
 
     @mock.patch('requests.get', side_effect=mocked_request_status)
     def test_requestStatus(self, mock_get):
-        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7') 
+        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7','') 
         status = clageHomeServer.requestStatus()
         self.assertEqual(SAMPLE_REQUEST_STATUS_RESPONSE, status)
 
-    # @mock.patch('requests.put')
-    # def test_setTemperature(self, mock_put):
-    #     response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setTemperature(45)
-    #     url = "https://192.168.0.78/devices/setpoint/2049DB0CD7"
-    #     body = {'data': 450, 'cid': '1'}
-    #     mock_put.assert_called_once_with(url=url, auth=("appuser","smart"), data=body, timeout=5, verify=False)
-    #     self.assertIsNotNone(response)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
+    def test_requestStatus_unavailable(self, mock_get):
+        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','UNKNOWN_ID','') 
+        status = clageHomeServer.requestStatus()
+        self.assertEqual({}, status)
 
-    # @mock.patch('requests.get', side_effect=mocked_request_status)
-    # def test_setAllowChargingFalse(self, mock_get):
-    #     response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAllowCharging(False)
-    #     mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=alw=0')
-    #     self.assertIsNotNone(response)
+    @mock.patch('requests.get', side_effect=mocked_request_consumption)
+    def test_GetConsumptionTotals(self, mock_get):
+        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7','') 
+        totals = clageHomeServer.GetConsumptionTotals()
+        self.assertEqual(totals['number_of_watertaps'], 2)
+        self.assertEqual(totals['usage_time'], 3.0)
+        self.assertEqual(totals['consumption_energy'], 4.5)
+        self.assertEqual(totals['consumption_water'], 7.5)
 
-    # @mock.patch('requests.get', side_effect=mocked_request_status)
-    # def test_setAutoStopTrue(self, mock_get):
-    #     response = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7').setAutoStop(True)
-    #     mock_get.assert_called_once_with('192.168.0.78/mqtt?payload=stp=2')
-    #     self.assertIsNotNone(response)
-
-    # def test_chargerNotAvailable(self):
-    #     status = ClageHomeServer('127.0.0.2','F8F005DB0CD7','2049DB0CD7').requestStatus()
-    #     self.maxDiff = None
-    #     self.assertEqual(SAMPLE_REQUEST_STATUS_RESPONSE_UNAVAIL, status)
+    @mock.patch('requests.put', side_effect=mocked_request_status)
+    @mock.patch('requests.get', side_effect=mocked_request_status)
+    def test_setTemperature(self, mock_get, mock_put):
+        clageHomeServer = ClageHomeServer('192.168.0.78','F8F005DB0CD7','2049DB0CD7','')
+        response = clageHomeServer.setTemperature(45.0)
+        mock_put.assert_called_once_with(
+            url='https://192.168.0.78/devices/setpoint/2049DB0CD7',
+            auth=('appuser', 'smart'),
+            data={'data': '450', 'cid': '1'},
+            timeout=5,
+            verify=False
+        )
+        self.assertIsNotNone(response)

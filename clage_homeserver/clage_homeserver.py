@@ -251,7 +251,7 @@ class ClageHomeServer:
 
     ACCESSCODE_API = {
         0: 'fSetpointRead: GET deviceSetpoint (Sollwert lesen)',
-        1: 'fSetpointWrite: PUT\:deviceSetpoint (Sollwert ändern)',
+        1: 'fSetpointWrite: PUT:deviceSetpoint (Sollwert ändern)',
         2: 'fStatusRead: GET deviceStatus (Gerätestatus lesen)',
         3: 'fStatusWrite: PUT deviceStatus (Gerätestatus ändern)',
         4: 'fSetupRead: GET deviceSetup (Gerätekonfiguration lesen)',
@@ -325,6 +325,21 @@ class ClageHomeServer:
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             return {}
 
+    def requestStatusRaw(self):
+        return self.__queryStatusApi()
+
+    def requestSetupRaw(self):
+        return self.__querySetupApi()
+
+    def requestDevicesRaw(self):
+        try:
+            urllib3.disable_warnings()
+            url = "https://"+self.ipAddress+"/devices"
+            devicesRequest = requests.get(url, auth=(self.username, self.password), timeout=5, verify=False)
+            return devicesRequest.json()
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
+            return {}
+
     def GetConsumptionTotals(self):
         urllib3.disable_warnings()
         response = {}
@@ -336,17 +351,23 @@ class ClageHomeServer:
             heater = totals.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
             heater_logs = heater.get('logs')[0]
             
-            number_of_watertaps = 0
-            usage_time = 0
-            consumption_energy = 0
-            consumption_water = 0
-
             usage_time = int(heater_logs.get('length'))                         # length	uint32_t	s	10 s	Duration of the tapping process in s
             consumption_energy = round(int(heater_logs.get('power'))/1000,2)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
             consumption_water = round(int(heater_logs.get('water'))/100,1)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters
 
+            # Get number of watertaps from individual logs
+            number_of_watertaps = 0
+            try:
+                logsUrl = "https://"+self.ipAddress+"/devices/logs/"+self.heaterId
+                logsRequest = requests.get(logsUrl, auth=(self.username, self.password), timeout=5, verify=False)
+                logs = logsRequest.json()
+                log_heater = logs.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+                number_of_watertaps = len(log_heater.get('logs', []))
+            except Exception:
+                pass
+
             return ({
-            'number_of_watertaps': number_of_watertaps,                      # Number of taps, not supported in the totals request
+            'number_of_watertaps': number_of_watertaps,                      # Number of taps
             'usage_time': round(usage_time/60,0),                            # Total usage time in minutes
             'consumption_energy': consumption_energy,                        # Total energy in kWh
             'consumption_water': consumption_water                           # Total water volume in liters
@@ -406,17 +427,21 @@ class ClageHomeServer:
         response = {}
         try:
             status = self.__queryStatusApi()
+            if not status or 'devices' not in status:
+                return {}
             response = ClageHomeServerMapper().mapApiStatusResponse(status)
         except JSONDecodeError:
-            response = ClageHomeServerMapper().mapApiStatusResponse({})
+            pass
         return response
 
     def requestSetup(self):
         response = {}
         try:
             setup = self.__querySetupApi()
+            if not setup or 'devices' not in setup:
+                return {}
             response = ClageHomeServerMapper().mapApiSetupResponse(setup)
         except JSONDecodeError:
-            response = ClageHomeServerMapper().mapApiSetupResponse({})
+            pass
         return response
 

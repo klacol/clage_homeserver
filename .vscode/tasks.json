@@ -1,0 +1,67 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Install (editable)",
+            "type": "shell",
+            "command": "pip install -e .",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Package",
+            "type": "shell",
+            "command": "python -m build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "python -m pytest tests/ -v",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Upload to TestPyPI",
+            "type": "shell",
+            "command": "python -m twine upload --repository testpypi --username __token__ --password ${input:testPypiToken} dist/*",
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "Upload to PyPI",
+            "type": "shell",
+            "command": "python -m twine upload --repository pypi --username __token__ --password ${input:pypiToken} dist/*",
+            "group": "none",
+            "problemMatcher": []
+        },
+        {
+            "label": "Lint (ruff)",
+            "type": "shell",
+            "command": "python -m ruff check clage_homeserver/",
+            "group": "none",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "testPypiToken",
+            "type": "promptString",
+            "description": "TestPyPI API Token (pypi-...)",
+            "password": true
+        },
+        {
+            "id": "pypiToken",
+            "type": "promptString",
+            "description": "PyPI API Token (pypi-...)",
+            "password": true
+        }
+    ]
+}
