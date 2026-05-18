@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clage_homeserver"
-version = "0.1.15"
+version = "0.1.16"
 description = "A Python API for accessing and managing an electrical CLAGE continuous waterheater (e.g. DSX Touch) via the CLAGE Homeserver REST API"
 readme = "README.md"
 license = "MIT"

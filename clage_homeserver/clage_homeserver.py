@@ -5,7 +5,7 @@
 import requests
 import datetime
 from json import JSONDecodeError
-from datetime import datetime
+from datetime import datetime, timezone
 import urllib3
 
 NUMBER_OF_CONNECTED_HEATERS = 1       # I have only one heater, so i start with this scenario
@@ -24,11 +24,14 @@ class ClageHomeServerMapper:
         homeserver_version = ClageHomeServer.VERSION.get(status.get('version')) or 'unknown'       # 1.4
         homeserver_error = ClageHomeServer.ERROR.get(status.get('error')) or 'unknown'             # OK
         posixTimestamp = int(status.get('time', 0))                               # see https://www.epochconverter.com/
-        homeserver_time = str(datetime.utcfromtimestamp(posixTimestamp))             # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
+        homeserver_time = str(datetime.fromtimestamp(posixTimestamp, tz=timezone.utc))  # 1631263211 => Freitag, 10. September 2021 10:40:11 GMT+02:00 DST
         homeserver_success = bool(status.get('success'))                          # True
         homeserver_cached = bool(status.get('cached'))                            # True
 
-        heater = status.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+        devices = status.get('devices')
+        if not devices:
+            return {}
+        heater = devices[NUMBER_OF_CONNECTED_HEATERS-1]
         heater_id = heater.get('id')                                              # 2049DB0CD7
         heater_busId = heater.get('busId')                                        # 1
         heater_name = heater.get('name')                                          # ""
@@ -104,7 +107,10 @@ class ClageHomeServerMapper:
 
     def mapApiSetupResponse(self, setup):
 
-        heater = setup.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+        devices = setup.get('devices')
+        if not devices:
+            return {}
+        heater = devices[NUMBER_OF_CONNECTED_HEATERS-1]
         heater_setup = heater.get('setup')
 
         heater_setup_swVersion = heater_setup.get('swVersion')                                    # String, z.B. 1.4.1,	Version der Gerätesoftware
@@ -148,7 +154,7 @@ class ClageHomeServerMapper:
         
         heater_setup_id = float(heater_logs.get('id)'))                        # id	uint32_t		1	eindeutiger Datensatzindex
         posixTimestamp = int(heater_logs.get('time', 0))                       # see https://www.epochconverter.com/
-        heater_setup_time = str(datetime.utcfromtimestamp(posixTimestamp))      # time	uint64_t	Unixtime	1355266800	Endzeit der Zapfung in UTC
+        heater_setup_time = str(datetime.fromtimestamp(posixTimestamp, tz=timezone.utc))  # time	uint64_t	Unixtime	1355266800	Endzeit der Zapfung in UTC
         heater_setup_length = float(heater_logs.get('length'))                 # length	uint32_t	s	10 s	Dauer des Zapfvorgangs in s
         heater_setup_power = float(heater_logs.get('power'))/1000              # power	uint32_t	1/1 Wh	6 Wh	Energiebedarf in kWh
         heater_setup_water = float(heater_logs.get('water'))                   # water	uint32_t	1/100 l	0,42 l	genutzte Wassermenge in Liter
@@ -348,7 +354,10 @@ class ClageHomeServer:
             totalsRequest = requests.get(url, auth=(self.username, self.password), timeout=5, verify=False)
             totals = totalsRequest.json()
 
-            heater = totals.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+            devices = totals.get('devices')
+            if not devices:
+                return {}
+            heater = devices[NUMBER_OF_CONNECTED_HEATERS-1]
             heater_logs = heater.get('logs')[0]
             
             usage_time = int(heater_logs.get('length'))                         # length	uint32_t	s	10 s	Duration of the tapping process in s
@@ -361,8 +370,10 @@ class ClageHomeServer:
                 logsUrl = "https://"+self.ipAddress+"/devices/logs/"+self.heaterId
                 logsRequest = requests.get(logsUrl, auth=(self.username, self.password), timeout=5, verify=False)
                 logs = logsRequest.json()
-                log_heater = logs.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
-                number_of_watertaps = len(log_heater.get('logs', []))
+                log_devices = logs.get('devices')
+                if log_devices:
+                    log_heater = log_devices[NUMBER_OF_CONNECTED_HEATERS-1]
+                    number_of_watertaps = len(log_heater.get('logs', []))
             except Exception:
                 pass
 
@@ -383,7 +394,10 @@ class ClageHomeServer:
             logsRequest = requests.get(url, auth=(self.username, self.password), timeout=5, verify=False)
             logs = logsRequest.json()
 
-            heater = logs.get('devices')[NUMBER_OF_CONNECTED_HEATERS-1]
+            devices = logs.get('devices')
+            if not devices:
+                return {}
+            heater = devices[NUMBER_OF_CONNECTED_HEATERS-1]
             heater_logs = heater.get('logs')
             
             number_of_watertaps = 0
@@ -394,7 +408,7 @@ class ClageHomeServer:
             for log in heater_logs:
                 heater_setup_id = int(log.get('id'))                         # id	uint32_t		1	unique record index
                 posixTimestamp = int(log['time'])                            # see https://www.epochconverter.com/
-                heater_setup_time = str(datetime.utcfromtimestamp(posixTimestamp))      # time	uint64_t	Unixtime	1355266800	End time of tapping in UTC
+                heater_setup_time = str(datetime.fromtimestamp(posixTimestamp, tz=timezone.utc))  # time	uint64_t	Unixtime	1355266800	End time of tapping in UTC
                 heater_setup_length = int(log.get('length'))                 # length	uint32_t	s	10 s	Duration of the tapping process in s
                 heater_setup_energy = round(int(log.get('power'))/1000,1)    # power	uint32_t	1/1 Wh	6 Wh	Energy demand in kWh, it is energy(kWh) not power (kW)
                 heater_setup_water = round(int(log.get('water'))/100,0)      # water	uint32_t	1/100 l	0,42 l	Amount of water used in liters

@@ -79,7 +79,7 @@ class TestClageHomeServerMapper(TestCase):
         self.assertEqual(self.__helper_get_mapped_key(['success'], True).get('homeserver_success'),True)
 
     def test_map_homeserver_time(self):
-        self.assertEqual("2021-09-10 08:40:11", self.__helper_get_mapped_key('time', 1631263211).get('homeserver_time'))
+        self.assertEqual("2021-09-10 08:40:11+00:00", self.__helper_get_mapped_key('time', 1631263211).get('homeserver_time'))
 
     def test_map_heater_setpoint(self):
         self.assertEqual(self.__helper_get_mapped_key(['devices',0,'status','setpoint'],333).get('heater_status_setpoint'),33.3)

@@ -48,7 +48,7 @@ SAMPLE_API_STATUS_RESPONSE = {
 SAMPLE_REQUEST_STATUS_RESPONSE = {
     "homeserver_version": "1.4",
     "homeserver_error": "OK",
-    "homeserver_time": "2021-09-10 08:40:11",
+    "homeserver_time": "2021-09-10 08:40:11+00:00",
     "homeserver_success": True,
     "homeserver_cached": True,
     "heater_id": "2049DB0CD7",
@@ -58,7 +58,7 @@ SAMPLE_REQUEST_STATUS_RESPONSE = {
     "heater_signal": -72,
     "heater_rssi": 0,
     "heater_lqi": 0,
-    "heater_status_setpoint": 60,
+    "heater_status_setpoint": 60.0,
     "heater_status_tIn": 22.9,
     "heater_status_tOut": 18.8,
     "heater_status_tP1": 0.0,
