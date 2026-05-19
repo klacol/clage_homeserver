@@ -126,7 +126,7 @@ class ClageHomeServerMapper:
         heater_setup_calValue = float(heater_setup.get('calValue'))                               # Integer, 2800, interner Kontrollwert
         heater_setup_timerPowerOn = float(heater_setup.get('timerPowerOn'))/60                    # uint32_t, s=>min, 300,	Heizdauer
         heater_setup_timerLifetime = round(float(heater_setup.get('timerLifetime'))/60/60,0)      # uint32_t,	s=>h,	172800,	Gesamtbetriebsdauer
-        heater_setup_timerStandby = float(heater_setup.get('timerStandby'))                       # uint32_t,	s, 2400, Betriebsdauer seit dem letzten Stromausfall
+        heater_setup_timerStandby = round(float(heater_setup.get('timerStandby'))/60/60,1)        # uint32_t,	s=>h, 2400, Betriebsdauer seit dem letzten Stromausfall
         #heater_setup_totalPowerConsumption = round(float(heater_setup.get('totalPowerConsumption')),1)     # uint16_t,	kWh, 0, Gesamtenergie
         #heater_setup_totalWaterConsumption = round(float(heater_setup.get('totalWaterConsumption')),0)     # uint16_t,	Liter, 0, Gesamtwassermenge
 
